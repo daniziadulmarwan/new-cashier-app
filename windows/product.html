@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="../assets/styles/main.css" />
+  </head>
+  <body id="product-data">
+    <!-- START: Navbar -->
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <div style="display: inline-block; color: aliceblue">
+          <span id="store-name" class="ms-2" style="font-size: 14.5px"
+            >My Store</span
+          >
+        </div>
+        <div style="display: inline-block">
+          <!-- START: User Dropdown -->
+          <div class="dropdown" style="display: inline">
+            <a
+              href="#"
+              class="btn btn-sm btn-primary rounded-1"
+              id="userInfoDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <i class="bi bi-person"></i>
+              <span id="userFirstName">Fayha </span>
+            </a>
+            <div
+              class="dropdown-menu dropdown-menu-end dropdown-light"
+              style="width: 350px"
+              aria-labelledby="userInfoDropdown"
+            >
+              <div class="dropdown-body">
+                <table
+                  class="table table-sm table-bordered"
+                  style="
+                    font-size: 13px;
+                    border-radius: 100%;
+                    text-align: center;
+                  "
+                >
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Access Level</th>
+                      <th>Position</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td id="userAccessLevel">Fayha</td>
+                      <td id="userPosition">Admin</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- START: User Dropdown -->
+          <button class="btn btn-sm btn-secondary">
+            <i class="bi bi-dash-lg"></i>
+          </button>
+          <button class="btn btn-sm btn-danger">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+    <!-- END: Navbar -->
+
+    <!-- START: Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-menu">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="main-toolbar">
+              <div class="row g-3">
+                <div class="col-auto">
+                  <button
+                    class="btn btn-sm btn-light btn-light-bordered"
+                    id="add-data"
+                    title="Tambah Data"
+                    onclick="openFormAddData()"
+                  >
+                    <i class="bi bi-plus-lg"></i>
+                  </button>
+                  <button
+                    onclick="deleteAction()"
+                    data-bs-toggle="tooltip"
+                    id="delete-multiple-data"
+                    title="Hapus"
+                    class="btn btn-sm btn-light btn-light-bordered"
+                  >
+                    <i class="bi bi-trash"></i>
+                  </button>
+                  <button
+                    title="Export Excel"
+                    onclick="exportData('csv')"
+                    class="btn btn-sm btn-light btn-light-bordered"
+                  >
+                    <i class="bi bi-file-earmark-excel"></i>
+                  </button>
+                  <button
+                    title="Export PDF"
+                    onclick="exportData('pdf')"
+                    class="btn btn-sm btn-light btn-light-bordered"
+                  >
+                    <i class="bi bi-file-earmark-pdf"></i>
+                  </button>
+                  <button
+                    onclick="printData()"
+                    title="Print Table"
+                    class="btn btn-sm btn-light btn-light-bordered"
+                  >
+                    <i class="bi bi-printer"></i>
+                  </button>
+                  <button
+                    onclick="selectAll()"
+                    id="select-all"
+                    title="Select All"
+                    class="btn btn-sm btn-light btn-light-bordered"
+                  >
+                    <i class="bi bi-check-lg"></i>
+                  </button>
+                  <button
+                    onclick="unselectAll()"
+                    id="unselect-all"
+                    title="Unselect All"
+                    class="btn btn-sm btn-light btn-light-bordered"
+                  >
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+
+                <div class="col-auto">
+                  <select
+                    name="row_per_page"
+                    id="select_per_page"
+                    class="form-select form-select-sm"
+                  >
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+
+                <div class="col-auto">
+                  <div class="input-group mb-2" id="search-input-group">
+                    <input
+                      type="search"
+                      class="form-control form-control-sm"
+                      id="search-data"
+                      placeholder="Search"
+                    />
+                    <div class="input-group-append">
+                      <button
+                        class="btn btn-sm btn-light btn-light-bordered"
+                        id="btn-search-data"
+                      >
+                        <i class="bi bi-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="pagination" class="col-auto">
+                  <div class="btn-group btn-group-sm">
+                    <div class="btn-group btn-group-sm me-1">
+                      <a
+                        href="#"
+                        class="btn btn-sm btn-light btn-light-bordered"
+                        id="first-page"
+                        ><i class="bi bi-chevron-double-left"></i
+                      ></a>
+                      <a
+                        href="#"
+                        class="btn btn-sm btn-light btn-light-bordered"
+                        id="prev-page"
+                        ><i class="bi bi-chevron-left"></i
+                      ></a>
+                    </div>
+
+                    <div class="btn-group btn-group-sm me-1">
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        id="page_number"
+                        value="1"
+                        style="
+                          width: 50px;
+                          border-top-right-radius: 0px;
+                          border-bottom-right-radius: 0px;
+                        "
+                      />
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        id="total_pages"
+                        readonly
+                        disabled
+                        style="
+                          width: 50px;
+                          border-top-left-radius: 0px;
+                          border-bottom-left-radius: 0px;
+                        "
+                      />
+                    </div>
+
+                    <div class="btn-group btn-group-sm">
+                      <a
+                        href="#"
+                        class="btn btn-sm btn-light btn-light-bordered"
+                        id="next-page"
+                        ><i class="bi bi-chevron-right"></i
+                      ></a>
+                      <a
+                        href="#"
+                        class="btn btn-sm btn-light btn-light-bordered"
+                        id="last-page"
+                        ><i class="bi bi-chevron-double-right"></i
+                      ></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END: Toolbar -->
+
+    <!-- START: Main -->
+    <main class="main-table">
+      <!-- START: Form Add Data Product -->
+      <div id="form-add-data" class="bg-light">
+        <div style="padding: 20px 20px 20px 20px">
+          <h6>Tambah Data</h6>
+          <div style="color: black" class="row">
+            <div class="col-2 px-1">
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="product_name"
+                required
+                placeholder="Nama produk"
+              />
+            </div>
+
+            <div class="col-2 px-1">
+              <select id="product_category" class="form-select form-select-sm">
+                <option>Kategori</option>
+              </select>
+            </div>
+
+            <div class="col-2 px-1">
+              <div class="input-group mb-2" id="search-input-group">
+                <button class="btn btn-sm btn-light btn-light-bordered">
+                  <i class="bi bi-cash"></i>
+                </button>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  id="product_price"
+                  placeholder="Harga jual"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="col-2 px-1">
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="product_cost"
+                required
+                placeholder="Harga pokok"
+              />
+            </div>
+
+            <div class="col-2 px-1">
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="product_intial_qty"
+                required
+                placeholder="Stock awal"
+              />
+            </div>
+
+            <div class="col-2 px-1">
+              <select id="product_unit" class="form-select form-select-sm">
+                <option value="">Satuan</option>
+              </select>
+            </div>
+
+            <div class="col-2 px-1">
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="product_barcode"
+                placeholder="Barcode"
+              />
+            </div>
+
+            <div class="col-auto">
+              <button
+                onclick="insertProduct()"
+                class="btn btn-sm btn-primary rounded-1 me-2"
+              >
+                <i class="bi bi-send me-1"></i> Submit</button
+              ><button
+                class="btn btn-sm rounded-1 text-white"
+                id="close-form-add-data"
+                onclick="resetFormAddData()"
+                style="background: #e0144c"
+              >
+                <i class="bi bi-x-square"></i>
+                Reset
+              </button>
+
+              <button
+                class="btn btn-sm btn-secondary rounded-1"
+                id="close-form-add-data"
+                onclick="closeFormAddData()"
+              >
+                <i class="bi bi-x-circle me-1"></i>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END: Form Add Data Product -->
+
+      <div style="padding: 20px">
+        <div class="row">
+          <div class="col-xl-12">
+            <div id="alert"></div>
+            <div class="table-responsive">
+              <table
+                class="table table-sm table-bordered"
+                style="font-size: 13px"
+              >
+                <thead class="table-light" id="col-head">
+                  <tr>
+                    <th>Id</th>
+                    <th>Nama Produk</th>
+                    <th>Kode Produk</th>
+                    <th>Barcode</th>
+                    <th>Kategori</th>
+                    <th>Satuan</th>
+                    <th>Harga Jual/Satuan</th>
+                    <th>Harga Pokok/Satuan</th>
+                    <th>Saldo Awal</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="data"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- END: Main -->
+
+    <!-- Javascripts -->
+    <script src="../assets/jquery/jquery-1.9.0.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/require.js"></script>
+    <script src="../scripts/toolbar.js"></script>
+    <script src="../scripts/product.js"></script>
+    <script src="../scripts/main.js"></script>
+  </body>
+</html>

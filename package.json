@@ -1,0 +1,24 @@
+{
+  "name": "mycashier",
+  "version": "1.0.0",
+  "description": "desktop-app-javascript",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ELECTRON_DISABLE_SECURITY_WARNINGS=true electron .",
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "Dani Ziadul Marwan",
+  "license": "ISC",
+  "dependencies": {
+    "@electron/remote": "^2.0.8",
+    "bootstrap-icons": "^1.9.1",
+    "electron": "^16.2.8",
+    "fs": "^0.0.1-security",
+    "imask": "^6.4.3",
+    "md5": "^2.3.0",
+    "path": "^0.12.7",
+    "sqlite3": "^5.1.2",
+    "url": "^0.11.0"
+  }
+}

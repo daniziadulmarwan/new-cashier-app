@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="../assets/styles/main.css" />
+    <link
+      rel="stylesheet"
+      href="../assets/jquery/jquery-ui-1.9.2/css/base/jquery-ui-1.9.2.custom.min.css"
+    />
+  </head>
+  <body style="background-color: #f0f3f4">
+    <!-- START: Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+      <div
+        style="display: inline-block; font-size: 13; color: aliceblue"
+        class="px-2"
+      >
+        <img src="" id="store-logo" class="me-1" alt="" />
+        <span id="store-name"></span>
+      </div>
+    </nav>
+    <!-- END: Navbar -->
+
+    <!-- START: Content -->
+    <div style="padding: 80px 0px 0px 0px">
+      <div class="row small-gutters">
+        <div class="col-md-8">
+          <div class="box">
+            <!-- START: Box Header -->
+            <div class="box-header with-border">
+              <h6>
+                <img
+                  src="../assets/images/cashier.png"
+                  alt=""
+                  width="30"
+                  height="30"
+                />
+                <button
+                  class="btn btn-sm btn-light btn-light-bordered mb-2 float-end me-sm-1"
+                  title="Edit Qty"
+                  id="edit-qty"
+                  onclick="salesModal('qty')"
+                >
+                  <i class="bi bi-bag-check"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-light btn-light-bordered mb-2 float-end me-sm-1"
+                  title="Potongan"
+                  id="discount_product"
+                  onclick="salesModal('discount')"
+                >
+                  <i class="bi bi-bookmark-check"></i>
+                </button>
+                <!-- NOTE:: Discount Final -->
+                <button
+                  class="btn btn-sm btn-light btn-light-bordered mb-2 float-end me-sm-1"
+                  title="Potongan Final"
+                  id="discount_final"
+                  onclick="salesModal('discount-final')"
+                >
+                  <i class="bi bi-tags"></i>
+                </button>
+                <!-- NOTE:: Btn New Sales -->
+                <button
+                  class="btn btn-sm btn-light btn-light-bordered mb-2 float-end me-sm-1"
+                  title="Tambah Penjualan"
+                  id="btn-new-sales"
+                  autofocus
+                  data-bs-toggle="modal"
+                  data-bs-target="#modal-new-sales"
+                  data-bs-backdrop="false"
+                >
+                  <i class="bi bi-plus-lg"></i>
+                </button>
+              </h6>
+            </div>
+            <!-- END: Box Header -->
+
+            <!-- START: Box Body -->
+            <div class="box-body">
+              <div class="row g-3">
+                <div class="col-auto">
+                  <div class="btn-group mb-2">
+                    <input
+                      type="text"
+                      class="form-control form-control-sm sales-input"
+                      id="product_code"
+                      placeholder="Kode/Barcode Produk"
+                      disabled
+                    />
+                    <button
+                      onclick="insertSales()"
+                      id="btn_add_sales"
+                      class="btn btn-sm btn-primary sales-input"
+                      disabled
+                    >
+                      <i class="bi bi-plus-lg"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <select
+                    id="product_name"
+                    onchange="getCodeByName()"
+                    class="form-select form-select-sm sales-input mb-2"
+                    disabled
+                  ></select>
+                </div>
+              </div>
+              <div class="sales-record">
+                <div class="table-responsive mt-2" style="height: 250px">
+                  <table class="table table-sm table-bordered">
+                    <thead class="thead-light">
+                      <tr>
+                        <th>Nama Produk</th>
+                        <th>Kode Produk</th>
+                        <th><span class="float-end">Harga</span></th>
+                        <th style="text-align: center">Qty</th>
+                        <th>Satuan</th>
+                        <th>Potongan</th>
+                        <th><span class="float-end">Total</span></th>
+                      </tr>
+                    </thead>
+                    <tbody id="sales-data"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-sm">
+                  <tbody>
+                    <tr>
+                      <td><span class="float-end">Potongan Final</span></td>
+                      <td>
+                        <span class="float-end" id="discount-final"></span>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td><span class="float-end">PPN</span></td>
+                      <td>
+                        <!-- NOTE:: Tax -->
+                        <span class="float-end" id="tax"></span>
+                        <input type="hidden" id="input-tax" class="float-end" />
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="float-end"><b>Total</b></span>
+                      </td>
+                      <td>
+                        <!-- NOTE:: Total and Tax -->
+                        <span
+                          class="float-end"
+                          id="total-and-tax"
+                          style="font-weight: bold"
+                        ></span>
+                      </td>
+                      <input type="hidden" id="input-total-and-tax" />
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- END: Box Body -->
+
+            <!-- START: Box Footer -->
+            <div class="box-footer" style="margin-left: 0px; margin-right: 0px">
+              <button
+                class="btn btn-sm btn-primary float-end me-sm-2 mb-2"
+                id="btn-checkout"
+                onclick="salesModal('checkout')"
+              >
+                Checkout (F2)
+              </button>
+              <button
+                onclick="closeCashier()"
+                class="btn btn-sm btn-light btn-light-bordered"
+                id="btn-close-cashier"
+              >
+                <i class="bi bi-x-lg"></i>
+                Close Cashier
+              </button>
+            </div>
+            <!-- START: Box Footer -->
+          </div>
+        </div>
+
+        <!-- START: Right Column -->
+        <div class="col-md-4">
+          <div class="box-common">
+            <table
+              class="table table-bordered"
+              style="font-size: 14px; border: 1px solid #d2d3d3"
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="btn btn-sm btn-light btn-light-bordered">
+                      <i class="bi bi-person"></i>
+                    </span>
+                    Admin
+                  </td>
+                  <td>
+                    :
+                    <span id="info-sales-cashier"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="btn btn-sm btn-light btn-light-bordered">
+                      <i class="bi bi-calendar2-date"></i>
+                    </span>
+                    Tanggal
+                  </td>
+                  <td>
+                    :
+                    <span id="info-sales-date"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="btn btn-sm btn-light btn-light-bordered">
+                      <i class="bi bi-card-checklist"></i>
+                    </span>
+                    No. Nota/Struk
+                  </td>
+                  <td>
+                    :
+                    <span id="info-sales-number"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="btn btn-sm btn-light btn-light-bordered">
+                      <i class="bi bi-people"></i>
+                    </span>
+                    Customers
+                  </td>
+                  <td>
+                    :
+                    <span id="info-buyer"></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="divider" style="margin-top: 0px">
+              <div class="box-info">
+                <div class="box-info-body" style="background-color: #f8f9fa">
+                  <div class="box-info-right">
+                    <i class="bi bi-cart-check" style="font-size: 36px"></i>
+                  </div>
+                  <div class="box-info-left float-end">
+                    <!-- NOTE:: Info Total Sales -->
+                    <h3 id="info-total-sales"></h3>
+                  </div>
+                </div>
+                <div class="box-info-title">Total Belanja</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- START: Right Column -->
+      </div>
+    </div>
+    <!-- END: Content -->
+
+    <!-- START: Modal -->
+    <div
+      class="modal fade sales-modal"
+      id="modal-new-sales"
+      role="dialog"
+      aria-labelledby="modal-new-sales"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content with-shadow">
+          <!-- START: Modal Header -->
+          <div class="modal-header bg-custom-dark">
+            Penjualan Baru
+            <a
+              href="#"
+              class="close"
+              customcustom
+              type="button"
+              style="color: white"
+              data-bs-dismiss="modal"
+            >
+              <span aria-hidden="true">
+                <i class="bi bi-x-lg text-secondary"></i>
+              </span>
+            </a>
+          </div>
+          <!-- END: Modal Header -->
+
+          <!-- START: Modal Body -->
+          <div class="modal-body">
+            <div class="mb-2">
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                placeholder="Nomor Faktur"
+                id="sales-number"
+              />
+            </div>
+            <div class="mb-2">
+              <select
+                id="buyer-select"
+                data-table="buyers"
+                class="form-select form-select-sm"
+              ></select>
+              <input type="hidden" id="buyer-id" />
+              <small id="buyerHelp" class="form-text text-muted">
+                <a href="#" id="open-modal-buyer" data-bs-toggle="modal"
+                  >Klik disini</a
+                >
+                untuk menambah data buyer/customer
+              </small>
+            </div>
+            <div class="mb-2">
+              <input
+                type="text"
+                id="buyer-address"
+                class="form-control form-control-sm"
+                placeholder="Alamat Buyer / Customer"
+              />
+            </div>
+            <div class="mb-2">
+              <input
+                type="text"
+                id="po-number"
+                class="form-control form-control-sm"
+                placeholder="Nomor PO"
+              />
+            </div>
+            <div class="mb-2">
+              <select id="cash-credit" class="form-select form-select-sm">
+                <option value="cash">Cash</option>
+                <option value="credit">Credit</option>
+              </select>
+            </div>
+            <div class="mb-2" id="due-date-form-group">
+              <label for="ddfg">Tanggal jatuh tempo</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                id="due-date"
+                placeholder="YYYY:MM:DD"
+              />
+            </div>
+            <div class="mb-2" id="term-form-group">
+              <input
+                type="text"
+                id="term"
+                class="form-control form-control-sm"
+                style="display: none"
+              />
+            </div>
+            <div class="mb-2">
+              <input
+                type="text"
+                id="description"
+                class="form-control form-control-sm"
+                placeholder="Keterangan"
+              />
+            </div>
+            <div class="custom-control custom-checkbox">
+              <!-- NOTE:: Sales Tax -->
+              <input
+                type="checkbox"
+                id="sales-tax"
+                class="custom-control-input sales-tax"
+              />
+              <label
+                for="sales-tax"
+                class="custom-control-label"
+                style="font-size: 13px; color: black"
+                >Beri PPN</label
+              >
+            </div>
+          </div>
+          <!-- END: Modal Body -->
+
+          <!-- START: Modal Footer -->
+          <div class="modal-footer">
+            <button
+              onclick="openSales()"
+              id="btn-create-new-sales"
+              class="btn btn-primary btn-sm"
+            >
+              <i class="bi bi-check-lg"></i> Buat Penjualan
+            </button>
+            <button
+              data-bs-dismiss="modal"
+              id="btn-create-new-sales"
+              class="btn btn-secondary btn-sm"
+            >
+              <i class="bi bi-x-circle"></i>
+              Close
+            </button>
+          </div>
+          <!-- END: Modal Footer -->
+        </div>
+      </div>
+    </div>
+    <!-- END: Modal -->
+
+    <!-- Javascripts -->
+    <script src="../assets/jquery/jquery-1.9.0.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/jquery/jquery-ui-1.9.2/js/jquery-ui-1.9.2.custom.min.js"></script>
+    <script src="../assets/jquery/jquery.scannerdetection.js"></script>
+    <script src="../scripts/require.js"></script>
+    <script src="../scripts/cashier.js"></script>
+  </body>
+</html>

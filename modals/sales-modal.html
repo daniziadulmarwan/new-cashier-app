@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="../assets/styles/main.css" />
+  </head>
+  <body>
+    <div style="padding: 0px 30px 40px 30px">
+      <div class="row mt-3" id="data"></div>
+    </div>
+
+    <nav
+      class="navbar navbar-dark bg-dark fixed-bottom"
+      style="padding: 4px 20px"
+    >
+      <a href="#" class="navbar-brand"></a>
+      <div class="form">
+        <button
+          onclick="submitUpdate()"
+          class="btn btn-danger btn-sm"
+          id="btn-submit"
+        >
+          <i class="bi bi-send"></i> Submit
+        </button>
+      </div>
+    </nav>
+
+    <!-- Javascripts -->
+    <script src="../assets/jquery/jquery-1.9.0.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/require.js"></script>
+    <script src="../scripts/sales-modal.js"></script>
+  </body>
+</html>

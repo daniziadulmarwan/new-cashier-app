@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="./node_modules/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="./assets/styles/main.css" />
+  </head>
+  <body style="background-color: #f2f3f4">
+    <!-- START: Navbar -->
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+      <div class="container-fluid">
+        <div style="display: inline-block; color: aliceblue">
+          <span id="store-name" class="ms-2" style="font-size: 14.5px"
+            >My Store</span
+          >
+        </div>
+        <div style="display: inline-block">
+          <!-- START: User Dropdown -->
+          <div class="dropdown" style="display: inline">
+            <a
+              href="#"
+              class="btn btn-sm btn-primary rounded-1"
+              id="userInfoDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <i class="bi bi-person"></i>
+              <span id="userFirstName">Fayha </span>
+            </a>
+            <div
+              class="dropdown-menu dropdown-menu-end dropdown-light"
+              style="width: 350px"
+              aria-labelledby="userInfoDropdown"
+            >
+              <div class="dropdown-body">
+                <table
+                  class="table table-sm table-bordered"
+                  style="
+                    font-size: 13px;
+                    border-radius: 100%;
+                    text-align: center;
+                  "
+                >
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Access Level</th>
+                      <th>Position</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td id="userAccessLevel"></td>
+                      <td id="userPosition"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- START: User Dropdown -->
+
+          <!-- Setting: User Dropdown -->
+          <div class="dropdown" style="display: inline">
+            <a
+              href="#"
+              class="btn btn-sm btn-secondary rounded-1"
+              id="settingInfoDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <i class="bi bi-gear"></i>
+            </a>
+            <ul
+              class="dropdown-menu dropdown-menu-end dropdown-light"
+              style="font-size: 14px"
+              aria-labelledby="settingInfoDropdown"
+            >
+              <li>
+                <a class="dropdown-item" id="general-setting" href="#"
+                  ><i class="bi bi-wrench me-2"></i>
+                  Pengaturan Umum
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" id="user-setting" href="#"
+                  ><i class="bi bi-people me-2"></i>
+                  Pengaturan Akun
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" id="user-setting" href="#"
+                  ><i class="bi bi-shop me-2"></i>
+                  Profil Toko
+                </a>
+              </li>
+            </ul>
+          </div>
+          <!-- Setting: User Dropdown -->
+          <button class="btn btn-sm btn-secondary">
+            <i class="bi bi-box-arrow-in-right"></i>
+          </button>
+          <button class="btn btn-sm btn-secondary">
+            <i class="bi bi-dash-lg"></i>
+          </button>
+          <button class="btn btn-sm btn-danger">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+    <!-- END: Navbar -->
+
+    <!-- START: Content -->
+    <div style="padding: 70px 20px 20px 20px">
+      <div class="d-flex justify-content-center mb-3">
+        <!-- START:Card 1 -->
+        <div class="col-md-3 me-3">
+          <div class="box-menu">
+            <a href="#" class="menu-link" onclick="cashier()">
+              <img src="./assets/images/cashier.png" width="64" />
+            </a>
+            <div class="box-menu-title">Kasir</div>
+          </div>
+        </div>
+        <!-- END:Card 1 -->
+
+        <!-- START:Card 2 -->
+        <div class="col-md-3 me-3">
+          <div class="box-menu">
+            <a href="#" class="menu-link">
+              <img src="./assets/images/grocery.png" width="64" />
+            </a>
+            <div class="box-menu-title">Data Penjualan</div>
+          </div>
+        </div>
+        <!-- END:Card 2 -->
+
+        <!-- START:Card 3 -->
+        <div class="col-md-3 me-3">
+          <div class="box-menu">
+            <a href="#" class="menu-link">
+              <img src="./assets/images/report.png" width="64" />
+            </a>
+            <div class="box-menu-title">Laporan Penjualan</div>
+          </div>
+        </div>
+        <!-- END:Card 3 -->
+      </div>
+      <div class="d-flex justify-content-center">
+        <!-- START:Card 1 -->
+        <div class="col-md-3 me-3">
+          <div class="box-menu">
+            <a href="#" class="menu-link">
+              <img src="./assets/images/chart.png" width="64" />
+            </a>
+            <div class="box-menu-title">Grafik</div>
+          </div>
+        </div>
+        <!-- END:Card 1 -->
+
+        <!-- START:Card 2 -->
+        <div class="col-md-3 me-3">
+          <div class="box-menu">
+            <a href="#" onclick="product()" class="menu-link">
+              <img src="./assets/images/box.png" width="64" />
+            </a>
+            <div class="box-menu-title">Data Produk</div>
+          </div>
+        </div>
+        <!-- END:Card 2 -->
+
+        <!-- START:Card 3 -->
+        <div class="col-md-3 me-3">
+          <div class="box-menu">
+            <a href="#" class="menu-link">
+              <img src="./assets/images/customer.png" width="64" />
+            </a>
+            <div class="box-menu-title">Data Customer</div>
+          </div>
+        </div>
+        <!-- END:Card 3 -->
+      </div>
+    </div>
+    <!-- END: Content -->
+
+    <!-- Javascripts -->
+    <script src="./assets/jquery/jquery-1.9.0.min.js"></script>
+    <script src="./assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+      const electron = require("electron");
+      const { ipcRenderer } = electron;
+
+      const product = () => {
+        ipcRenderer.send("load:product-window");
+      };
+
+      const cashier = () => {
+        ipcRenderer.send("load:cashier-window");
+      };
+    </script>
+  </body>
+</html>
