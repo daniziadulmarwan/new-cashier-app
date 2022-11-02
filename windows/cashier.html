@@ -76,7 +76,7 @@
                   data-bs-toggle="modal"
                   data-bs-target="#modal-new-sales"
                   data-bs-backdrop="false"
-                  onclick="salesNumber()"
+                  onclick="salesNumber(); loadBuyer()"
                 >
                   <i class="bi bi-plus-lg"></i>
                 </button>
@@ -322,9 +322,7 @@
               ></select>
               <input type="hidden" id="buyer-id" />
               <small id="buyerHelp" class="form-text text-muted">
-                <a href="#" id="open-modal-buyer" data-bs-toggle="modal"
-                  >Klik disini</a
-                >
+                <a href="#" onclick="loadBuyerForm()">Klik disini</a>
                 untuk menambah data buyer/customer
               </small>
             </div>

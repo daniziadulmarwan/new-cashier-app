@@ -505,3 +505,29 @@ const salesNumber = () => {
     $("#btn-create-new-sales").focus();
   });
 };
+
+const loadBuyer = () => {
+  let query = `select * from buyers`;
+  db.all(query, (err, rows) => {
+    if (err) throw err;
+
+    let option = "<option hidden value=''>Buyer/Costumer</option>";
+    if (rows.length < 1) {
+      option += "";
+    } else {
+      rows.map((row) => {
+        option += `<option value="${row.name}">${row.name}</option>`;
+      });
+    }
+
+    $("#buyer-select").html(option);
+  });
+};
+
+const loadBuyerForm = () => {
+  ipcRenderer.send("load:buyer-form");
+};
+
+ipcRenderer.on("load:buyer-select", () => {
+  loadBuyer();
+});

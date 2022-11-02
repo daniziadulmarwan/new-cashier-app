@@ -21,6 +21,7 @@ let printPage;
 let salesModal;
 let salesNum;
 let printSalesPage;
+let buyerModal;
 
 ipcMain.on("sales-number", (e, msgSalesNumber) => {
   salesNum = msgSalesNumber;
@@ -808,4 +809,31 @@ ipcMain.on("print:sales-evidence", (e, docId) => {
     printSalesPage = null;
     salesNum = "";
   });
+});
+
+const modalBuyer = () => {
+  buyerModal = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+
+    autoHideMenuBar: true,
+    width: 300,
+    height: 400,
+    parent: cashierWindow,
+    modal: true,
+    resizable: false,
+    title: "Add Buyer | Customer",
+  });
+
+  remote.enable(buyerModal.webContents);
+  buyerModal.loadFile("modals/buyer-form.html");
+  buyerModal.on("close", () => {
+    cashierWindow.webContents.send("load:buyer-select");
+  });
+};
+
+ipcMain.on("load:buyer-form", () => {
+  modalBuyer();
 });
