@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const url = require("url");
 const md5 = require("md5");
+const { enable } = require("@electron/remote/main");
 
 remote.initialize();
 
@@ -643,7 +644,7 @@ const printSales = (
   salesDate = `${day}/${month}/${year}`;
 
   let storeInfo = {};
-  db.all(`select * from store order by id asc limit 1`, (err, rows) => {
+  db.all(`select * from profile order by id asc limit 1`, (err, rows) => {
     if (err) throw err;
     if (rows.length < 1) {
       storeInfo.name = "My Store";
@@ -654,16 +655,16 @@ const printSales = (
     } else {
       storeInfo.name = rows[0].store_name;
       storeInfo.address = rows[0].store_address;
-      if (rows[0].store_tax_id != "") {
-        storeInfo.taxNumber = `NPWP. ${rows[0].store_tax_id}`;
-      } else {
+      if (rows[0].store_tax_id == "" || rows[0].store_tax_id == null) {
         storeInfo.taxNumber = "";
+      } else {
+        storeInfo.taxNumber = `NPWP. ${rows[0].store_tax_id}`;
       }
 
-      if (rows[0].phone_number != "") {
-        storeInfo.telp = `| Telp. ${rows[0].phone_number}`;
-      } else {
+      if (rows[0].phone_number == "" || rows[0].phone_number == null) {
         storeInfo.telp = "";
+      } else {
+        storeInfo.telp = `| Telp. ${rows[0].phone_number}`;
       }
 
       if (rows[0].logo == "") {
@@ -728,7 +729,7 @@ const printSales = (
   };
 
   db.all(
-    `select * from discount_final where invoice_number = ${salesNumber}`,
+    `select * from discount_final where invoice_number = '${salesNumber}'`,
     (err, rows) => {
       if (err) throw err;
       if (rows.length < 1) {
@@ -767,6 +768,7 @@ const printSales = (
     }
   );
 
+  remote.enable(printSalesPage.webContents);
   printSalesPage.loadFile("windows/receipt.html");
 
   printSalesPage.webContents.on("dom-ready", () => {
@@ -778,27 +780,32 @@ const printSales = (
       salesFooter
     );
   });
-
-  printSalesPage.webContents.on("did-finish-load", () => {
-    switch (docId) {
-      case "cashier":
-        cashierWindow.webContents.send("load:blank-sales");
-        salesModal.close();
-        break;
-    }
-
-    printSalesPage.webContents.print({
-      printBackground: true,
-    }),
-      () => {
-        db.run(
-          `insert into sales_evidence_info(invoice_number, print_status) values('${salesNumber}', 'printed')`,
-          (err) => {
-            if (err) throw err;
-          }
-        );
-        printSalesPage.close();
-        salesNum = "";
-      };
-  });
 };
+
+ipcMain.on("print:sales-evidence", (e, docId) => {
+  switch (docId) {
+    case "cashier":
+      cashierWindow.webContents.send("load:blank-sales");
+      salesModal.close();
+      break;
+  }
+
+  printSalesPage.webContents.print({
+    printBackground: true,
+  }),
+    () => {
+      db.run(
+        `insert into sales_evidence_info(invoice_number, print_status) values('${salesNumber}', 'printed')`,
+        (err) => {
+          if (err) throw err;
+        }
+      );
+      printSalesPage.close();
+      salesNum = "";
+    };
+
+  printSalesPage.on("close", () => {
+    printSalesPage = null;
+    salesNum = "";
+  });
+});

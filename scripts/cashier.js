@@ -451,3 +451,57 @@ $(document).scannerDetection({
     insertSales();
   },
 });
+
+const blankSales = () => {
+  $("#sales-number").val("");
+  $("#buyer-select").val("");
+  $("#buyer-id").val("");
+  $("#buyer-address").val("");
+  $("#po-number").val("");
+  $("#cash-kredit").val("");
+  $("#cash-credit").val("");
+  $("#due-date").val("");
+  $("#term").val("");
+  $("#description").val("");
+
+  $("#info-sales-number").html("");
+  $("#info-buyer").html("");
+  $("#info-total-sales").html("");
+
+  $("#sales-data").html("");
+  $("#discount-final").html("");
+  $("#tax").html("");
+  $("#total-and-tax").html("");
+
+  $(".sales-input").attr("disabled", true);
+  $("#btn-new-sales").removeAttr("disabled");
+  $("#btn-new-sales").focus();
+};
+
+ipcRenderer.on("load:blank-sales", () => {
+  blankSales();
+});
+
+const salesNumber = () => {
+  let query = `select max(substr(invoice_number,7,7)) as sales_number from sales`;
+  db.all(query, (err, rows) => {
+    if (err) throw err;
+    let number;
+
+    if (rows[0].sales_number == null) {
+      number = 1;
+    } else {
+      number = parseInt(rows[0].sales_number);
+    }
+
+    let suffixNum = number.toString().padStart(7, 0);
+
+    let date = new Date();
+    let month = date.getMonth().toString().padStart(2, 0);
+    let year = date.getFullYear();
+
+    let salesNum = `${month}${year}${suffixNum}`;
+    $("#sales-number").val(salesNum);
+    $("#btn-create-new-sales").focus();
+  });
+};
