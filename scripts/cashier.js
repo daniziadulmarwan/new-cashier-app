@@ -483,7 +483,7 @@ ipcRenderer.on("load:blank-sales", () => {
 });
 
 const salesNumber = () => {
-  let query = `select max(substr(invoice_number,7,7)) as sales_number from sales`;
+  let query = `select max(substr(invoice_number, 7, 7)) as sales_number from sales`;
   db.all(query, (err, rows) => {
     if (err) throw err;
     let number;
@@ -491,7 +491,7 @@ const salesNumber = () => {
     if (rows[0].sales_number == null) {
       number = 1;
     } else {
-      number = parseInt(rows[0].sales_number);
+      number = parseInt(rows[0].sales_number) + 1;
     }
 
     let suffixNum = number.toString().padStart(7, 0);

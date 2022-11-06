@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="../assets/styles/main.css" />
+  </head>
+  <body id="sales">
+    <!-- START: Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-menu">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="main-toolbar">
+              <div class="row g-3">
+                <div class="col-auto">
+                  <select
+                    name="row_per_page"
+                    id="select_per_page"
+                    class="form-select form-select-sm"
+                  >
+                    <option value="2">2</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+
+                <div class="col-auto">
+                  <div class="input-group mb-2" id="search-input-group">
+                    <input
+                      type="search"
+                      class="form-control form-control-sm"
+                      id="search-data"
+                      placeholder="Search"
+                    />
+                    <div class="input-group-append">
+                      <button
+                        class="btn btn-sm btn-light btn-light-bordered"
+                        id="btn-search-data"
+                      >
+                        <i class="bi bi-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="pagination" class="col-auto">
+                  <div class="btn-group btn-group-sm">
+                    <div class="btn-group btn-group-sm me-1">
+                      <a
+                        href="#"
+                        class="btn btn-sm btn-light btn-light-bordered"
+                        id="first-page"
+                        ><i class="bi bi-chevron-double-left"></i
+                      ></a>
+                      <a
+                        href="#"
+                        class="btn btn-sm btn-light btn-light-bordered"
+                        id="prev-page"
+                        ><i class="bi bi-chevron-left"></i
+                      ></a>
+                    </div>
+
+                    <div class="btn-group btn-group-sm me-1">
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        id="page_number"
+                        value="1"
+                        style="
+                          width: 50px;
+                          border-top-right-radius: 0px;
+                          border-bottom-right-radius: 0px;
+                        "
+                      />
+                      <input
+                        type="text"
+                        class="form-control form-control-sm"
+                        id="total_pages"
+                        readonly
+                        disabled
+                        style="
+                          width: 50px;
+                          border-top-left-radius: 0px;
+                          border-bottom-left-radius: 0px;
+                        "
+                      />
+                    </div>
+
+                    <div class="btn-group btn-group-sm">
+                      <a
+                        href="#"
+                        class="btn btn-sm btn-light btn-light-bordered"
+                        id="next-page"
+                        ><i class="bi bi-chevron-right"></i
+                      ></a>
+                      <a
+                        href="#"
+                        class="btn btn-sm btn-light btn-light-bordered"
+                        id="last-page"
+                        ><i class="bi bi-chevron-double-right"></i
+                      ></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END: Toolbar -->
+
+    <!-- START: Main -->
+    <div class="main-table">
+      <div style="padding: 20px 20px 20px 20px">
+        <div class="row">
+          <div class="col-12">
+            <div class="table-responsive">
+              <table
+                class="table table-sm table-bordered"
+                style="font-size: 13px"
+              >
+                <thead class="thead-light" id="col-head">
+                  <tr>
+                    <th>Id</th>
+                    <th>Tanggal</th>
+                    <th>Nomor Penjualan</th>
+                    <th>Nama Produk</th>
+                    <th>Kode Produk</th>
+                    <th>Harga</th>
+                    <th>Qty</th>
+                    <th>Satuan</th>
+                    <th>Potongan</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="data"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END: Main -->
+
+    <!-- Javascripts -->
+    <script src="../assets/jquery/jquery-1.9.0.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/require.js"></script>
+    <script src="../scripts/toolbar.js"></script>
+    <script src="../scripts/sales-data.js"></script>
+    <script src="../scripts/main.js"></script>
+  </body>
+</html>

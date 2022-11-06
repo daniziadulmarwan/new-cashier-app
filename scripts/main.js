@@ -13,6 +13,9 @@ const load_data = (page_number, total_row_displayed, searchValue = "") => {
     case "product-data":
       loadProduct(page_number, total_row_displayed, searchValue);
       break;
+    case "sales":
+      loadSales(page_number, total_row_displayed, searchValue);
+      break;
   }
 };
 
@@ -91,4 +94,4 @@ const alertSuccess = (msg) => {
 };
 
 // Function Caller
-deleteRecords();
+// deleteRecords();

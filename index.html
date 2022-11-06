@@ -135,7 +135,7 @@
         <!-- START:Card 2 -->
         <div class="col-md-3 me-3">
           <div class="box-menu">
-            <a href="#" class="menu-link">
+            <a href="#" class="menu-link" onclick="salesData()">
               <img src="./assets/images/grocery.png" width="64" />
             </a>
             <div class="box-menu-title">Data Penjualan</div>
@@ -204,6 +204,10 @@
 
       const cashier = () => {
         ipcRenderer.send("load:cashier-window");
+      };
+
+      const salesData = () => {
+        ipcRenderer.send("load:sales-data-window");
       };
     </script>
   </body>

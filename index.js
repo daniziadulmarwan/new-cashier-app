@@ -23,6 +23,8 @@ let salesNum;
 let printSalesPage;
 let buyerModal;
 
+let salesWindow;
+
 ipcMain.on("sales-number", (e, msgSalesNumber) => {
   salesNum = msgSalesNumber;
 });
@@ -836,4 +838,33 @@ const modalBuyer = () => {
 
 ipcMain.on("load:buyer-form", () => {
   modalBuyer();
+});
+
+const salesWin = () => {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
+  salesWindow = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+
+    // autoHideMenuBar: true,
+    title: "My Cashier | Data Penjualan",
+    width: width,
+    height: height,
+  });
+
+  remote.enable(salesWindow.webContents);
+  salesWindow.loadFile("windows/sales-data.html");
+  salesWindow.webContents.on("did-finish-load", () => {
+    mainWindow.hide();
+  });
+  salesWindow.on("close", () => {
+    mainWindow.show();
+  });
+};
+
+ipcMain.on("load:sales-data-window", () => {
+  salesWin();
 });
