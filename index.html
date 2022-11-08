@@ -146,7 +146,7 @@
         <!-- START:Card 3 -->
         <div class="col-md-3 me-3">
           <div class="box-menu">
-            <a href="#" class="menu-link">
+            <a href="#" class="menu-link" onclick="salesReport()">
               <img src="./assets/images/report.png" width="64" />
             </a>
             <div class="box-menu-title">Laporan Penjualan</div>
@@ -208,6 +208,10 @@
 
       const salesData = () => {
         ipcRenderer.send("load:sales-data-window");
+      };
+
+      const salesReport = () => {
+        ipcRenderer.send("load:sales-report-window");
       };
     </script>
   </body>

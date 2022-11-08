@@ -6,7 +6,6 @@ const fs = require("fs");
 const path = require("path");
 const url = require("url");
 const md5 = require("md5");
-const { enable } = require("@electron/remote/main");
 
 remote.initialize();
 
@@ -24,6 +23,7 @@ let printSalesPage;
 let buyerModal;
 
 let salesWindow;
+let salesReportWindow;
 
 ipcMain.on("sales-number", (e, msgSalesNumber) => {
   salesNum = msgSalesNumber;
@@ -867,4 +867,33 @@ const salesWin = () => {
 
 ipcMain.on("load:sales-data-window", () => {
   salesWin();
+});
+
+const salesReportWin = () => {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
+  salesReportWindow = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+
+    // autoHideMenuBar: true,
+    title: "My Cashier | Laporan Penjualan",
+    width: width,
+    height: height,
+  });
+
+  remote.enable(salesReportWindow.webContents);
+  salesReportWindow.loadFile("windows/sales-report.html");
+  salesReportWindow.webContents.on("did-finish-load", () => {
+    mainWindow.hide();
+  });
+  salesReportWindow.on("close", () => {
+    mainWindow.show();
+  });
+};
+
+ipcMain.on("load:sales-report-window", () => {
+  salesReportWin();
 });

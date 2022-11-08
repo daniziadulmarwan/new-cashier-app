@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="../assets/styles/main.css" />
+  </head>
+  <body id="sales-report">
+    <!-- START: Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-menu">
+        <div class="row">
+          <div class="col-xl-12">
+            <div class="main-toolbar">
+              <div class="row g-3">
+                <div class="col-auto">
+                  <button
+                    title="Export PDF"
+                    onclick="exportData('pdf')"
+                    class="btn btn-sm btn-light btn-light-bordered"
+                  >
+                    <i class="bi bi-file-earmark-pdf"></i>
+                  </button>
+                </div>
+
+                <div class="col-auto">
+                  <select
+                    name="report_span"
+                    id="report_span"
+                    class="form-select form-select-sm"
+                  >
+                    <option value="monthly">Per Bulan</option>
+                    <option value="annual">Per Tahun</option>
+                    <option value="total">Total</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END: Toolbar -->
+
+    <!-- START: Content -->
+    <div style="padding: 20px 20px">
+      <div class="row">
+        <div class="col-auto">
+          <div class="box">
+            <div class="box-header with-border">
+              <div class="row">
+                <div class="col-auto" style="font-size: 15px; color: grey">
+                  <i class="bi bi-clipboard-check"></i> Laporan Penjualan
+                </div>
+                <div class="col-auto">
+                  <div class="float-end">
+                    <select
+                      id="start-month"
+                      class="form-select form-select-sm mb-2"
+                    >
+                      <option value="01">Januari</option>
+                      <option value="02">Februari</option>
+                      <option value="03">Maret</option>
+                      <option value="04">April</option>
+                      <option value="05">Mei</option>
+                      <option value="06">Juni</option>
+                      <option value="07">Juli</option>
+                      <option value="08">Agustus</option>
+                      <option value="09">September</option>
+                      <option value="10">Oktober</option>
+                      <option value="11">November</option>
+                      <option value="12">Desember</option>
+                    </select>
+                    <select
+                      id="start-year"
+                      class="form-select form-select-sm mb-2"
+                    ></select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="box-body"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END: Content -->
+
+    <!-- Javascripts -->
+    <script src="../assets/jquery/jquery-1.9.0.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/require.js"></script>
+    <script src="../scripts/toolbar.js"></script>
+    <script src="../scripts/sales-report.js"></script>
+    <script src="../scripts/main.js"></script>
+  </body>
+</html>
