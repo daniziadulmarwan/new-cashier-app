@@ -1,10 +1,16 @@
+const numberFormat = (number) => {
+  let numberFrmt = Intl.NumberFormat("de-DE").format(number);
+  return numberFrmt;
+};
+
 const yearSelect = () => {
   let yearOptions = "";
+  let selected;
   db.all(
     `select name from sqlite_master where type='table' and name not like 'sqlite_%'`,
     (err, rows) => {
       if (err) throw err;
-      if (rows.length < 1) {
+      if (rows.length > 1) {
         db.all(
           `select substr(date(input_date), 1,4 ) as sales_year from sales limit 1`,
           (err, row) => {
@@ -19,8 +25,16 @@ const yearSelect = () => {
 
             let i;
             for (let i = 0; i < 21; i++) {
-              yearOptions += `<option value="${year + i}">${year + i}</option>`;
+              if (year == year + i) {
+                selected = "selected";
+              } else {
+                selected = "";
+              }
+              yearOptions += `<option value="${year + i}" ${selected}>${
+                year + i
+              }</option>`;
             }
+            $("#start-year").html(yearOptions);
           }
         );
       } else {
@@ -28,10 +42,191 @@ const yearSelect = () => {
         let year = parseInt(d.getFullYear());
         let i;
         for (let i = 0; i < 21; i++) {
-          yearOptions += `<option value="${year + i}">${year + i}</option>`;
+          if (year == year + i) {
+            selected = "selected";
+          } else {
+            selected = "";
+          }
+          yearOptions += `<option value="${year + i}" ${selected}>${
+            year + i
+          }</option>`;
         }
+        $("#start-year").html(yearOptions);
       }
     }
   );
-  $("#start-year").html(yearOptions);
+};
+
+const loadReport = (reportSpan, startMonth, startYear) => {
+  let query;
+  let endMonth;
+  let endYear;
+
+  if (startMonth == 01) {
+    endMonth = 12;
+    endYear = startYear;
+  } else if (parseInt(startMonth) > 1) {
+    endMonth = (parseInt(startMonth) - 1).toString().padStart(2, 0);
+    endYear = parseInt(startYear) + 1;
+  }
+
+  switch (reportSpan) {
+    case "annual":
+      query = `select sales.*, sum(discount_final.total_discount_final) as discount_final from (select annual_sales.date as date, sum(annual_sales.total) as total, sum(annual_sales.cogs) as cogs
+      from
+      (select substr(sales_table.sales_date, 1, 7) as date, sales_table.total as total, sales_table.cogs as cogs from
+      (select date(input_date) as sales_date, sum(total) as total, sum((qty*cost_of_product)) as cogs
+      from
+      sales where substr(date(input_date), 1, 7) between '${startYear}' and '${endYear}-${endMonth}' group by sales_date) as sales_table)
+      as annual_sales group by annual_sales.date) as sales left join
+      discount_final on sales.date = substr(date(discount_final.input_date), 1, 7)`;
+      break;
+    case "monthly":
+      query = `select sales_table.*, sum(discount_final.total_discount_final) as discount_final from (select date(input_date) as date, sum(total) as total, sum((qty*cost_of_product)) as cogs from sales where substr(date(input_date), 1, 7) = '${startYear}-${startMonth}' group by date) as sales_table left join discount_final on sales_table.date = date(discount_final.input_date) group by date`;
+      break;
+  }
+
+  db.all(query, (err, rows) => {
+    if (err) throw err;
+    let tr = "";
+    let totalNetSales = 0;
+    let totalCogs = 0;
+    let totalProfit = 0;
+    if (rows.length < 1) {
+      tr = "";
+      $("#data").html(tr);
+      $("#net-total-sales").html("");
+      $("#total-cogs").html("");
+      $("#total-profit").html("");
+    } else {
+      rows.map((row) => {
+        let netSales = row.total - row.discount_final;
+        let profit = netSales - row.cogs;
+        totalNetSales += netSales;
+        totalCogs += row.cogs;
+        totalProfit += profit;
+        tr += `<tr>
+                <td>${row.date}</td>
+                <td><span class="float-end">${numberFormat(
+                  row.total
+                )}</span></td>
+                <td><span class="float-end">${numberFormat(
+                  row.discount_final
+                )}</span></td>
+                <td><span class="float-end">${numberFormat(
+                  netSales
+                )}</span></td>
+                <td><span class="float-end">${numberFormat(
+                  row.cogs
+                )}</span></td>
+                <td><span class="float-end">${numberFormat(profit)}</span></td>
+
+              </tr>`;
+      });
+
+      $("#data").html(tr);
+      $("#net-total-sales").html(numberFormat(totalNetSales));
+      $("#total-cogs").html(numberFormat(totalCogs));
+      $("#total-profit").html(numberFormat(totalProfit));
+    }
+  });
+};
+
+const setDate = () => {
+  yearSelect();
+  let date = new Date();
+  let month = (date.getMonth() + 1).toString().padStart(2, 0);
+  let year = date.getFullYear();
+  $(`#start-month option[value="${month}"]`).prop("selected", true);
+
+  let reportSpan = $("#report-span").val();
+  let startMonth = month;
+  let startYear = year;
+
+  loadReport(reportSpan, startMonth, startYear);
+};
+
+const changeDate = () => {
+  let reportSpan = $("#report-span").val();
+  let startMonth = $("#start-month").val();
+  let startYear = $("#start-year").val();
+  loadReport(reportSpan, startMonth, startYear);
+};
+
+const exportPdfSalesReport = (filePath, ext, joinIds = false) => {
+  let docId = $("body").attr("id");
+  let reportSpan = $("#report-span").val();
+  let startMonth = $("#start-month").val();
+  let startYear = $("#start-year").val();
+  let query;
+  switch (reportSpan) {
+    case "annual":
+      query = `select sales.*, sum(discount_final.total_discount_final) as discount_final from (select annual_sales.date as date, sum(annual_sales.total) as total, sum(annual_sales.cogs) as cogs
+      from
+      (select substr(sales_table.sales_date, 1, 7) as date, sales_table.total as total, sales_table.cogs as cogs from
+      (select date(input_date) as sales_date, sum(total) as total, sum((qty*cost_of_product)) as cogs
+      from
+      sales where substr(date(input_date), 1, 7) between '${startYear}' and '${endYear}-${endMonth}' group by sales_date) as sales_table)
+      as annual_sales group by annual_sales.date) as sales left join
+      discount_final on sales.date = substr(date(discount_final.input_date), 1, 7)`;
+      break;
+    case "monthly":
+      query = `select sales_table.*, sum(discount_final.total_discount_final) as discount_final from (select date(input_date) as date, sum(total) as total, sum((qty*cost_of_product)) as cogs from sales where substr(date(input_date), 1, 7) = '${startYear}-${startMonth}' group by date) as sales_table left join discount_final on sales_table.date = date(discount_final.input_date) group by date`;
+      break;
+  }
+
+  db.all(query, (err, rows) => {
+    if (err) throw err;
+    let tr = "";
+    let totalNetSales = 0;
+    let totalCogs = 0;
+    let totalProfit = 0;
+    let totalInfo = {};
+    if (rows.length < 1) {
+      tr = "";
+      $("#data").html(tr);
+      $("#net-total-sales").html("");
+      $("#total-cogs").html("");
+      $("#total-profit").html("");
+    } else {
+      rows.map((row) => {
+        let netSales = row.total - row.discount_final;
+        let profit = netSales - row.cogs;
+        totalNetSales += netSales;
+        totalCogs += row.cogs;
+        totalProfit += profit;
+        tr += `<tr>
+                <td>${row.date}</td>
+                <td><span class="float-end">${numberFormat(
+                  row.total
+                )}</span></td>
+                <td><span class="float-end">${numberFormat(
+                  row.discount_final
+                )}</span></td>
+                <td><span class="float-end">${numberFormat(
+                  netSales
+                )}</span></td>
+                <td><span class="float-end">${numberFormat(
+                  row.cogs
+                )}</span></td>
+                <td><span class="float-end">${numberFormat(profit)}</span></td>
+
+              </tr>`;
+      });
+
+      let thead = "";
+      totalInfo.totalNetSales = numberFormat(totalNetSales);
+      totalInfo.totalCogs = numberFormat(totalCogs);
+      totalInfo.totalProfit = numberFormat(totalProfit);
+      ipcRenderer.send(
+        "load:pdf",
+        thead,
+        tr,
+        filePath,
+        totalInfo,
+        docId,
+        "Laporan Penjualan"
+      );
+    }
+  });
 };

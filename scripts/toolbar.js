@@ -219,6 +219,9 @@ const exportPdf = (filePath, ext, joinIds = false) => {
     case "product-data":
       exportPdfProductData(filePath, ext, joinIds);
       break;
+    case "sales-report":
+      exportPdfSalesReport(filePath, ext, joinIds);
+      break;
   }
 };
 

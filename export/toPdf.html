@@ -62,7 +62,7 @@
     <script>
       ipcRenderer.on(
         "load:table-to-pdf",
-        (e, thead, tbody, titleObject, file_path) => {
+        (e, thead, tbody, totalObject, titleObject, file_path) => {
           const loadPdfData = () => {
             $("#theadToPdf").html(thead);
             $("#tbodyToPdf").html(tbody);

@@ -140,7 +140,14 @@ ipcMain.on("write:csv", (e, msgPath, msgContent) => {
   writeCsv(msgPath, msgContent);
 });
 
-const loadToPdf = (thead, tbody, file_path, ids = false, title) => {
+const loadToPdf = (
+  thead,
+  tbody,
+  file_path,
+  totalSales = false,
+  ids = false,
+  title
+) => {
   toPdf = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
@@ -148,6 +155,13 @@ const loadToPdf = (thead, tbody, file_path, ids = false, title) => {
     },
     show: false,
   });
+
+  let totalObject;
+  if (totalSales) {
+    totalObject = totalSales;
+  } else {
+    totalObject = "";
+  }
 
   let d = new Date();
   let day = d.getDate().toString().padStart(2, 0);
@@ -180,7 +194,7 @@ const loadToPdf = (thead, tbody, file_path, ids = false, title) => {
 
   switch (ids) {
     case "sales-report":
-      toPdf.loadFile("export/sales-record-pdf.html");
+      toPdf.loadFile("export/sales-report-pdf.html");
       break;
     default:
       toPdf.loadFile("export/toPdf.html");
@@ -191,6 +205,7 @@ const loadToPdf = (thead, tbody, file_path, ids = false, title) => {
       "load:table-to-pdf",
       thead,
       tbody,
+      totalObject,
       titleObject,
       file_path
     );
@@ -199,8 +214,15 @@ const loadToPdf = (thead, tbody, file_path, ids = false, title) => {
 
 ipcMain.on(
   "load:pdf",
-  (e, msgThead, msgTbody, msgFilePath, msgDocId, msgTitle) => {
-    loadToPdf(msgThead, msgTbody, msgFilePath, msgDocId, msgTitle);
+  (e, msgThead, msgTbody, msgFilePath, msgTotalSales, msgDocId, msgTitle) => {
+    loadToPdf(
+      msgThead,
+      msgTbody,
+      msgFilePath,
+      msgTotalSales,
+      msgDocId,
+      msgTitle
+    );
   }
 );
 
