@@ -24,6 +24,7 @@ let buyerModal;
 
 let salesWindow;
 let salesReportWindow;
+let chartWindow;
 
 ipcMain.on("sales-number", (e, msgSalesNumber) => {
   salesNum = msgSalesNumber;
@@ -918,4 +919,33 @@ const salesReportWin = () => {
 
 ipcMain.on("load:sales-report-window", () => {
   salesReportWin();
+});
+
+const chartWin = () => {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
+  chartWindow = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+
+    // autoHideMenuBar: true,
+    title: "My Cashier | Diagram Penjualan",
+    width: width,
+    height: height,
+  });
+
+  remote.enable(chartWindow.webContents);
+  chartWindow.loadFile("windows/chart.html");
+  chartWindow.webContents.on("did-finish-load", () => {
+    mainWindow.hide();
+  });
+  chartWindow.on("close", () => {
+    mainWindow.show();
+  });
+};
+
+ipcMain.on("load:chart-window", () => {
+  chartWin();
 });

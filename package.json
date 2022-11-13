@@ -13,6 +13,7 @@
   "dependencies": {
     "@electron/remote": "^2.0.8",
     "bootstrap-icons": "^1.9.1",
+    "chart.js": "^3.9.1",
     "electron": "^16.2.8",
     "fs": "^0.0.1-security",
     "imask": "^6.4.3",

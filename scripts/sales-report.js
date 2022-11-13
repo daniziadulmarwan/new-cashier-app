@@ -34,7 +34,17 @@ const yearSelect = () => {
                 year + i
               }</option>`;
             }
-            $("#start-year").html(yearOptions);
+
+            switch (doc_id) {
+              case "sales-report":
+                $("#start-year").html(yearOptions);
+                break;
+              case "chart":
+                $("#daily-sales-year,#monthly-sales-year,#top-sales-year").html(
+                  yearOptions
+                );
+                break;
+            }
           }
         );
       } else {
@@ -51,7 +61,18 @@ const yearSelect = () => {
             year + i
           }</option>`;
         }
-        $("#start-year").html(yearOptions);
+        switch (doc_id) {
+          case "sales-report":
+            $("#start-year").html(yearOptions);
+            break;
+          case "chart":
+            $(
+              "#daily-sales-year",
+              "#monthly-sales-year",
+              "#top-sales-year"
+            ).html(yearOptions);
+            break;
+        }
       }
     }
   );
@@ -137,13 +158,23 @@ const setDate = () => {
   let date = new Date();
   let month = (date.getMonth() + 1).toString().padStart(2, 0);
   let year = date.getFullYear();
-  $(`#start-month option[value="${month}"]`).prop("selected", true);
 
-  let reportSpan = $("#report-span").val();
-  let startMonth = month;
-  let startYear = year;
+  switch (doc_id) {
+    case "sales-report":
+      $(`#start-month option[value="${month}"]`).prop("selected", true);
+      let reportSpan = $("#report-span").val();
+      let startMonth = month;
+      let startYear = year;
+      loadReport(reportSpan, startMonth, startYear);
+      break;
+    case "chart":
+      $(`#daily-sales-month option[value="${month}"]`).prop("selected", true);
+      $(`#monthly-sales-month option[value="${month}"]`).prop("selected", true);
+      $(`#top-sales-month option[value="${month}"]`).prop("selected", true);
 
-  loadReport(reportSpan, startMonth, startYear);
+      dailySalesChart(month, year);
+      break;
+  }
 };
 
 const changeDate = () => {
