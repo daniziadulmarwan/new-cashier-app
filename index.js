@@ -871,7 +871,7 @@ const salesWin = () => {
       contextIsolation: false,
     },
 
-    // autoHideMenuBar: true,
+    autoHideMenuBar: true,
     title: "My Cashier | Data Penjualan",
     width: width,
     height: height,
