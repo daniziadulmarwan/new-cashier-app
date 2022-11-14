@@ -173,6 +173,8 @@ const setDate = () => {
       $(`#top-sales-month option[value="${month}"]`).prop("selected", true);
 
       dailySalesChart(month, year);
+      monthlySalesChart(month, year);
+      topSalesChart(month, year);
       break;
   }
 };

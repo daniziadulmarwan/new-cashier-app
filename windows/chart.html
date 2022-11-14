@@ -11,7 +11,7 @@
     />
     <link rel="stylesheet" href="../assets/styles/main.css" />
   </head>
-  <body id="chart" onload="setDate()">
+  <body id="chart" onload="setDate()" style="overflow-y: auto">
     <!-- START: Content -->
     <div style="padding: 20px 20px">
       <!-- START: Penjualan Bulanan -->
@@ -28,6 +28,7 @@
                     <select
                       class="form-select form-select-sm mb-2"
                       id="daily-sales-month"
+                      onchange="changeDailySalesChart()"
                     >
                       <option value="01">Januari</option>
                       <option value="02">Februari</option>
@@ -48,6 +49,7 @@
                   <select
                     class="form-select form-select-sm mb-2"
                     id="daily-sales-year"
+                    onchange="changeDailySalesChart()"
                   ></select>
                 </div>
               </div>
@@ -76,6 +78,7 @@
                     <select
                       class="form-select form-select-sm mb-2"
                       id="monthly-sales-month"
+                      onchange="changeMonthlySalesChart()"
                     >
                       <option value="01">Januari</option>
                       <option value="02">Februari</option>
@@ -96,12 +99,15 @@
                   <select
                     class="form-select form-select-sm mb-2"
                     id="monthly-sales-year"
+                    onchange="changeMonthlySalesChart()"
                   ></select>
                 </div>
               </div>
             </div>
 
-            <div class="box-body"></div>
+            <div class="box-body">
+              <canvas id="monthly-sales"></canvas>
+            </div>
           </div>
         </div>
         <!-- END: 1/8 -->
@@ -119,6 +125,7 @@
                     <select
                       class="form-select form-select-sm mb-2"
                       id="top-sales-month"
+                      onchange="changeTopSalesChart()"
                     >
                       <option value="01">Januari</option>
                       <option value="02">Februari</option>
@@ -139,12 +146,15 @@
                   <select
                     class="form-select form-select-sm mb-2"
                     id="top-sales-year"
+                    onchange="changeTopSalesChart()"
                   ></select>
                 </div>
               </div>
             </div>
 
-            <div class="box-body"></div>
+            <div class="box-body">
+              <canvas id="top-sales"></canvas>
+            </div>
           </div>
         </div>
         <!-- ENd: 1/4 -->
