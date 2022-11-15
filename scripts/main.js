@@ -5,6 +5,9 @@ const totalPage = (total_row_displayed, searchValue = "") => {
     case "product-data":
       totalProductPage(total_row_displayed, searchValue);
       break;
+    case "buyer-data":
+      totalBuyerPage(total_row_displayed, searchValue);
+      break;
   }
 };
 
@@ -15,6 +18,9 @@ const load_data = (page_number, total_row_displayed, searchValue = "") => {
       break;
     case "sales":
       loadSales(page_number, total_row_displayed, searchValue);
+      break;
+    case "buyer-data":
+      loadBuyer(page_number, total_row_displayed, searchValue);
       break;
   }
 };
@@ -30,6 +36,9 @@ const deleteRecords = (id) => {
     case "product-data":
       table = "products";
       break;
+    case "buyer-data":
+      table = "buyers";
+      break;
   }
   let sql = `delete from ${table} where id='${id}'`;
   db.run(sql, (err) => {
@@ -43,6 +52,9 @@ const deleteAllRecord = () => {
   switch (doc_id) {
     case "product-data":
       table = "products";
+      break;
+    case "buyer-data":
+      table = "buyers";
       break;
   }
   let sql = `delete from ${table}`;
@@ -58,6 +70,9 @@ const deleteMultipleRecords = (ids) => {
   switch (doc_id) {
     case "product-data":
       table = "products";
+      break;
+    case "buyer-data":
+      table = "buyers";
       break;
   }
   let sql = `delete from ${table} where id in(${ids})`;
@@ -80,6 +95,9 @@ const editRecord = (id) => {
   switch (doc_id) {
     case "product-data":
       editPrdData(id);
+      break;
+    case "buyer-data":
+      editBuyerData(id);
       break;
   }
 };

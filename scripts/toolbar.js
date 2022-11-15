@@ -1,8 +1,15 @@
 const openFormAddData = () => {
   $("#form-add-data").addClass("active");
-  $("#product_name").focus();
-  loadCategoryOption();
-  loadUnitsOption();
+  switch (doc_id) {
+    case "product-data":
+      $("#product_name").focus();
+      loadCategoryOption();
+      loadUnitsOption();
+      break;
+    case "buyer-data":
+      $("#buyer-name").focus();
+      break;
+  }
 };
 
 const closeFormAddData = () => {
@@ -210,6 +217,9 @@ const exportCsv = (filePath, ext, joinIds = false) => {
     case "product-data":
       exportCsvProductData(filePath, ext, joinIds);
       break;
+    case "buyer-data":
+      exportCsvBuyerData(filePath, ext, joinIds);
+      break;
   }
 };
 
@@ -221,6 +231,9 @@ const exportPdf = (filePath, ext, joinIds = false) => {
       break;
     case "sales-report":
       exportPdfSalesReport(filePath, ext, joinIds);
+      break;
+    case "buyer-data":
+      exportPdfBuyerData(filePath, ext, joinIds);
       break;
   }
 };

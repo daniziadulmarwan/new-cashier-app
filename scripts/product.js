@@ -1,3 +1,8 @@
+const numberFormat = (number) => {
+  let numberFrmt = Intl.NumberFormat("de-DE").format(number);
+  return numberFrmt;
+};
+
 let inputPrdPrice = IMask(document.getElementById("product_price"), {
   mask: "Rp num",
   blocks: {
@@ -97,19 +102,25 @@ function loadProduct(page_number, total_row_displayed, searchValue) {
           tr += `<tr data-id="${row.id}">
                   <td data-colname='Id'>
                     ${row.id}
-                    <input type='checkbox' id='${row.id}' class='data-checkbox' style="visibility:hidden" />
+                    <input type='checkbox' id='${
+                      row.id
+                    }' class='data-checkbox' style="visibility:hidden" />
                   </td>
                   <td>${row.product_name}</td>
                   <td>${row.product_code}</td>
                   <td>${row.barcode}</td>
                   <td>${row.category}</td>
                   <td>${row.unit}</td>
-                  <td>${row.selling_price}</td>
-                  <td>${row.cost_of_product}</td>
+                  <td>${numberFormat(row.selling_price)}</td>
+                  <td>${numberFormat(row.cost_of_product)}</td>
                   <td>${row.product_initial_qty}</td>
                   <td>
-                    <button onclick="editRecord(${row.id})" id="edit-data" class="btn btn-sm btn-light btn-light-bordered"><i class="bi bi-pencil-square"></i></button>
-                    <button onclick="deleteAction(${row.id},'${row.product_name}')" id="delete-data" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                    <button onclick="editRecord(${
+                      row.id
+                    })" id="edit-data" class="btn btn-sm btn-light btn-light-bordered"><i class="bi bi-pencil-square"></i></button>
+                    <button onclick="deleteAction(${row.id},'${
+            row.product_name
+          }')" id="delete-data" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
                   </td>
                 </tr>`;
         });
@@ -381,13 +392,13 @@ const exportCsvProductData = (filePath, ext, joinIds = false) => {
         .join("\r\n");
     };
     let content = convertToCsv(result);
-    ipcRenderer.send("write:csv", file_path, content);
+    ipcRenderer.send("write:csv", file_path, content, "product-data");
   });
 };
 
-ipcRenderer.on("created:csv", (e) => {
-  unselectAll();
-});
+// ipcRenderer.on("created:csv", (e) => {
+//   unselectAll();
+// });
 
 const exportPdfProductData = (filePath, ext, joinIds = false) => {
   let sql;

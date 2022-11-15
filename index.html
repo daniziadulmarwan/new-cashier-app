@@ -180,7 +180,7 @@
         <!-- START:Card 3 -->
         <div class="col-md-3 me-3">
           <div class="box-menu">
-            <a href="#" class="menu-link">
+            <a href="#" class="menu-link" onclick="buyer()">
               <img src="./assets/images/customer.png" width="64" />
             </a>
             <div class="box-menu-title">Data Customer</div>
@@ -216,6 +216,10 @@
 
       const chart = () => {
         ipcRenderer.send("load:chart-window");
+      };
+
+      const buyer = () => {
+        ipcRenderer.send("load:buyer-window");
       };
     </script>
   </body>

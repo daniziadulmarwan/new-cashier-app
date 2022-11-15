@@ -25,6 +25,7 @@ let buyerModal;
 let salesWindow;
 let salesReportWindow;
 let chartWindow;
+let buyerWindow;
 
 ipcMain.on("sales-number", (e, msgSalesNumber) => {
   salesNum = msgSalesNumber;
@@ -83,6 +84,9 @@ const editData = (docId, modalForm, modalWidth, modalHeight, rowId) => {
     case "product-data":
       parentWin = productWindow;
       break;
+    case "buyer-data":
+      parentWin = buyerWindow;
+      break;
   }
 
   editDataModal = new BrowserWindow({
@@ -106,7 +110,14 @@ const editData = (docId, modalForm, modalWidth, modalHeight, rowId) => {
   });
   editDataModal.on("close", () => {
     editDataModal = null;
-    productWindow.webContents.send("close:modal");
+    switch (docId) {
+      case "product-data":
+        productWindow.webContents.send("close:modal");
+        break;
+      case "buyer-data":
+        buyerWindow.webContents.send("close:modal");
+        break;
+    }
   });
 };
 
@@ -121,11 +132,15 @@ ipcMain.on("update:success", (e, msgDocId) => {
   switch (msgDocId) {
     case "product-data":
       productWindow.webContents.send("update:success", "Berhasil ubah data");
+      break;
+    case "buyer-data":
+      buyerWindow.webContents.send("update:success", "Berhasil ubah data");
+      break;
   }
   editDataModal.close();
 });
 
-const writeCsv = (path, content) => {
+const writeCsv = (path, content, doc_id) => {
   fs.writeFile(path, content, (err) => {
     if (err) throw err;
     dialog.showMessageBoxSync({
@@ -133,12 +148,20 @@ const writeCsv = (path, content) => {
       type: "info",
       message: "Csv file created",
     });
-    productWindow.webContents.send("created:csv");
+
+    switch (doc_id) {
+      case "product-data":
+        productWindow.webContents.send("created:csv");
+        break;
+      case "buyer-data":
+        buyerWindow.webContents.send("created:csv");
+        break;
+    }
   });
 };
 
-ipcMain.on("write:csv", (e, msgPath, msgContent) => {
-  writeCsv(msgPath, msgContent);
+ipcMain.on("write:csv", (e, msgPath, msgContent, doc_id) => {
+  writeCsv(msgPath, msgContent, doc_id);
 });
 
 const loadToPdf = (
@@ -244,7 +267,8 @@ ipcMain.on("create:pdf", (e, file_path) => {
           type: "info",
           message: "Berhasil export data ke Pdf",
         });
-        productWindow.webContents.send("created:pdf");
+        // productWindow.webContents.send("created:pdf");
+        // buyerWindow.webContents.send("created:pdf");
       });
     })
     .catch((err) => console.log(err.message));
@@ -948,4 +972,33 @@ const chartWin = () => {
 
 ipcMain.on("load:chart-window", () => {
   chartWin();
+});
+
+const buyerWin = () => {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
+  buyerWindow = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+
+    // autoHideMenuBar: true,
+    title: "My Cashier | Data Customer",
+    width: width,
+    height: height,
+  });
+
+  remote.enable(buyerWindow.webContents);
+  buyerWindow.loadFile("windows/buyer.html");
+  buyerWindow.webContents.on("did-finish-load", () => {
+    mainWindow.hide();
+  });
+  buyerWindow.on("close", () => {
+    mainWindow.show();
+  });
+};
+
+ipcMain.on("load:buyer-window", () => {
+  buyerWin();
 });
