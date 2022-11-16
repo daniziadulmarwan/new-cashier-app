@@ -46,8 +46,11 @@ const openSales = () => {
     tax_rate = 0;
     $("#input-tax").val(tax_rate);
   } else {
-    tax_rate = 0.1;
-    $("#input-tax").val(tax_rate);
+    db.all(`select * from tax where id = 1`, (err, rows) => {
+      if (err) throw err;
+      tax_rate = parseFloat(rows[0].percentage) / 100;
+      $("#input-tax").val(tax_rate);
+    });
   }
 
   $("#modal-new-sales").modal("hide");

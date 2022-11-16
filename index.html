@@ -86,7 +86,11 @@
               aria-labelledby="settingInfoDropdown"
             >
               <li>
-                <a class="dropdown-item" id="general-setting" href="#"
+                <a
+                  onclick="setting('general')"
+                  class="dropdown-item"
+                  id="general-setting"
+                  href="#"
                   ><i class="bi bi-wrench me-2"></i>
                   Pengaturan Umum
                 </a>
@@ -220,6 +224,10 @@
 
       const buyer = () => {
         ipcRenderer.send("load:buyer-window");
+      };
+
+      const setting = (param) => {
+        ipcRenderer.send("load:setting", param);
       };
     </script>
   </body>

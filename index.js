@@ -25,7 +25,48 @@ let buyerModal;
 let salesWindow;
 let salesReportWindow;
 let chartWindow;
+
 let buyerWindow;
+let generalSettingModal;
+
+const modalGeneralSetting = () => {
+  generalSettingModal = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+
+    // autoHideMenuBar:true
+    parent: mainWindow,
+    modal: true,
+    title: "Pengaturan Umum",
+    width: 500,
+    height: 540,
+    resizable: false,
+    minimizable: false,
+  });
+
+  generalSettingModal.loadFile("modals/general-setting.html");
+
+  let taxPercentage;
+  db.all(
+    `select * from tax where tax_name = 'pajak' and id = 1`,
+    (err, rows) => {
+      if (err) throw err;
+
+      if (rows.length < 1) {
+        taxPercentage = "";
+      } else {
+        taxPercentage = rows[0].percentage;
+      }
+    }
+  );
+
+  remote.enable(generalSettingModal.webContents);
+  generalSettingModal.webContents.on("dom-ready", () => {
+    generalSettingModal.webContents.send("load:config", taxPercentage);
+  });
+};
 
 ipcMain.on("sales-number", (e, msgSalesNumber) => {
   salesNum = msgSalesNumber;
@@ -1001,4 +1042,12 @@ const buyerWin = () => {
 
 ipcMain.on("load:buyer-window", () => {
   buyerWin();
+});
+
+ipcMain.on("load:setting", (e, msgParam) => {
+  switch (msgParam) {
+    case "general":
+      modalGeneralSetting();
+      break;
+  }
 });
