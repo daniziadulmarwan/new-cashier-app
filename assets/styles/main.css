@@ -224,3 +224,21 @@ tbody#data:hover {
 }
 
 /* Cashier */
+
+.overlay {
+  display: block;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #049efc;
+  transition: all 0.5s ease-in-out;
+  z-index: 999;
+}
+
+.overlay.out {
+  height: 0%;
+}
+
+.overlay.in {
+  height: 100%;
+}

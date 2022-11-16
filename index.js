@@ -28,6 +28,62 @@ let chartWindow;
 
 let buyerWindow;
 let generalSettingModal;
+let loginModal;
+
+let login = false;
+let idUser;
+let firstName;
+let position;
+let accessLevel;
+
+ipcMain.on(
+  "success:login",
+  (e, msgIdUser, msgFirstName, msgPosition, msgAccessLevel) => {
+    login = true;
+    idUser = msgIdUser;
+    firstName = msgFirstName;
+    position = msgPosition;
+    accessLevel = msgAccessLevel;
+
+    mainWindow.webContents.send(
+      "unlock:app",
+      msgIdUser,
+      firstName,
+      position,
+      accessLevel
+    );
+    loginModal.hide();
+  }
+);
+
+ipcMain.on("submit:logout", () => {
+  loginModal.show();
+});
+
+const modalLogin = () => {
+  loginModal = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+
+    // autoHideMenuBar:true,
+    width: 250,
+    height: 210,
+    parent: mainWindow,
+    modal: true,
+    frame: false,
+    minimizable: false,
+    maximizable: false,
+    resizable: false,
+  });
+
+  remote.enable(loginModal.webContents);
+  loginModal.loadFile("modals/login.html");
+  loginModal.webContents.on("did-finish-load", () => {
+    loginModal.focus();
+  });
+};
 
 const modalGeneralSetting = () => {
   generalSettingModal = new BrowserWindow({
@@ -85,11 +141,21 @@ const mainWin = () => {
   });
 
   mainWindow.loadFile("index.html");
-  db.serialize(() => console.log("Connected database"));
+  // db.serialize(() => console.log("Connected database"));
+  if (!login) {
+    mainWindow.webContents.on("did-finish-load", () => {
+      mainWindow.webContents.send("load:overlay");
+    });
+    modalLogin();
+  }
 };
 
 app.on("ready", () => {
   mainWin();
+});
+
+ipcMain.on("close:app", () => {
+  app.quit();
 });
 
 ipcMain.on("load:product-window", () => {

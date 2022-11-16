@@ -108,7 +108,7 @@
             </ul>
           </div>
           <!-- Setting: User Dropdown -->
-          <button class="btn btn-sm btn-secondary">
+          <button class="btn btn-sm btn-secondary" onclick="logout()">
             <i class="bi bi-box-arrow-in-right"></i>
           </button>
           <button class="btn btn-sm btn-secondary">
@@ -228,6 +228,41 @@
 
       const setting = (param) => {
         ipcRenderer.send("load:setting", param);
+      };
+
+      ipcRenderer.on("load:overlay", () => {
+        let overlay = `<div class="overlay"></div>`;
+        $("body").prepend(overlay);
+      });
+
+      const unCurtain = (userFirstName, userPosition, userAccessLevel) => {
+        $(".overlay").addClass("out");
+        $("#userFirstName").html(userFirstName);
+        $("#userPosition").html(userPosition);
+        $("#userAccessLevel").html(userAccessLevel);
+
+        switch (userAccessLevel) {
+          case "main_user":
+            $("#general-setting, #store-profile-setting").removeClass(
+              "disabled"
+            );
+            break;
+          default:
+            $("#general-setting, #store-profile-setting").addClass("disabled");
+            break;
+        }
+      };
+
+      ipcRenderer.on(
+        "unlock:app",
+        (e, idUser, firstName, position, accessLevel) => {
+          unCurtain(firstName, position, accessLevel);
+        }
+      );
+
+      const logout = () => {
+        $(".overlay").addClass("in");
+        ipcRenderer.send("submit:logout");
       };
     </script>
   </body>
