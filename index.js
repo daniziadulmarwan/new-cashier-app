@@ -28,6 +28,7 @@ let chartWindow;
 
 let buyerWindow;
 let generalSettingModal;
+let userSettingModal;
 let loginModal;
 
 let login = false;
@@ -121,6 +122,30 @@ const modalGeneralSetting = () => {
   remote.enable(generalSettingModal.webContents);
   generalSettingModal.webContents.on("dom-ready", () => {
     generalSettingModal.webContents.send("load:config", taxPercentage);
+  });
+};
+
+const modalUserSetting = () => {
+  userSettingModal = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+
+    // autoHideMenuBar:true
+    parent: mainWindow,
+    modal: true,
+    title: "Pengaturan Admin/User",
+    width: 500,
+    height: 540,
+    resizable: false,
+    minimizable: false,
+  });
+
+  userSettingModal.loadFile("modals/user-setting.html");
+  remote.enable(userSettingModal.webContents);
+  userSettingModal.webContents.on("dom-ready", () => {
+    userSettingModal.webContents.send("load:data", idUser, accessLevel);
   });
 };
 
@@ -1115,5 +1140,13 @@ ipcMain.on("load:setting", (e, msgParam) => {
     case "general":
       modalGeneralSetting();
       break;
+    case "user":
+      modalUserSetting();
+      break;
   }
+});
+
+ipcMain.on("success:update-user", () => {
+  editDataModal.close();
+  userSettingModal.webContents.send("success:update-user");
 });

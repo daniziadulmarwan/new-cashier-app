@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="../assets/styles/main.css" />
+    <style>
+      #input-tax-percentage {
+        border: 1px solid #b9b9b9;
+        padding: 5px 0px;
+        border-radius: 3px;
+        display: none;
+        padding-left: 5px;
+      }
+      #input-tax-percentage:focus {
+        border: 1px solid #b9b9b9;
+        outline: #d3f1ff;
+      }
+    </style>
+  </head>
+  <body style="background: #f0f3f4" id="user-setting">
+    <!-- START: Content -->
+    <div class="container mt-3">
+      <div class="row">
+        <div class="col-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h6>Admin</h6>
+            </div>
+            <div class="box-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="admin"></tbody>
+              </table>
+              <button
+                class="btn btn-sm btn-light btn-ligth-bordered float-end"
+                id="btn-add-admin"
+                onclick="addAdmin()"
+              >
+                <i class="bi bi-pencil-square"></i> Tambah Admin
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" id="main-user-row">
+        <div class="col-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h6>Main User</h6>
+            </div>
+            <div class="box-body">
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="main-user"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END: Content -->
+
+    <!-- Javascripts -->
+    <script src="../assets/jquery/jquery-1.9.0.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/require.js"></script>
+    <script>
+      let idUser;
+      let userAccessLevel;
+
+      const getData = (idUser, userAccessLevel) => {
+        let QueryDataAdmin = `select * from user where access_level = 'admin' and id = ${idUser}`;
+        let QueryDataMainUser = `select * from user where access_level = 'main_user'`;
+
+        switch (userAccessLevel) {
+          case "admin":
+            $("#main-user-row").html("");
+            $("#btn-add-admin").css("display", "none");
+            db.all(QueryDataAdmin, (err, rows) => {
+              if (err) throw err;
+              if (rows.length < 1) {
+                $("#admin").html("");
+              } else {
+                let tr = `<tr>
+                            <td>${rows[0].id}</td>
+                            <td>${rows[0].username}</td>
+                            <td>
+                              <button class="btn btn-sm btn-light btn-light-bordered float-end" title="edit username"><i class="bi bi-pen"></i></button>
+                              <button class="btn btn-sm btn-light btn-light-bordered float-end" title="edit profile"><i class="bi bi-person"></i></button>
+                              <button class="btn btn-sm btn-light btn-light-bordered float-end" title="edit password"><i class="bi bi-lock"></i></button>
+                            </td>
+                          </tr>`;
+                $("#admin").html(tr);
+              }
+            });
+            break;
+          default:
+            db.all(
+              `select * from user where access_level = 'admin'`,
+              (err, rows) => {
+                if (err) throw err;
+                if (rows.length < 1) {
+                  $("#admin").html("");
+                } else {
+                  let tr = "";
+                  rows.map((row) => {
+                    tr += `<tr>
+                             <td>${row.id}</td>
+                             <td>${row.username}</td>
+                             <td>
+                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit username"><i class="bi bi-pen"></i></button>
+                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit profile"><i class="bi bi-person"></i></button>
+                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit password"><i class="bi bi-lock"></i></button>
+                             </td>
+                           </tr>`;
+                  });
+
+                  $("#admin").html(tr);
+                }
+              }
+            );
+
+            db.all(QueryDataMainUser, (err, rows) => {
+              if (err) throw err;
+              if (rows.length < 1) {
+                $("#main-user").html("");
+              } else {
+                let tr = `<tr>
+                            <td>${rows[0].id}</td>
+                            <td>${rows[0].username}</td>
+                            <td>
+                              <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit username"><i class="bi bi-pen"></i></button>
+                              <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit profile"><i class="bi bi-person"></i></button>
+                              <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit password"><i class="bi bi-lock"></i></button>
+                            </td>
+                          </tr>`;
+                $("#main-user").html(tr);
+              }
+            });
+            break;
+        }
+      };
+
+      ipcRenderer.on("load:data", (e, userId, accessLevel) => {
+        idUser = userId;
+        userAccessLevel = accessLevel;
+        getData(idUser, userAccessLevel);
+      });
+
+      let doc_id = $("body").attr("id");
+
+      const addAdmin = () => {
+        let editForm = `<div class="form-group mb-2">
+                          <input type="text" class="form-control form-control-sm" id="first-name" placeholder="Nama Depan" autofocus />
+                        </div>
+                        <div class="form-group mb-2">
+                          <input type="text" class="form-control form-control-sm" id="last-name" placeholder="Nama Belakang" />
+                        </div>
+                        <div class="input-group input-group-sm mb-2">
+                          <span class="input-group-text"><i class="bi bi-person"></i></span>
+                          <input type="text" class="form-control form-control-sm" id="usernme" placeholder="Usernme" />
+                        </div>
+                        <div class="input-group input-group-sm mb-2">
+                          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                          <input type="password" class="form-control form-control-sm" id="password" placeholder="Password" />
+                        </div>
+                        <button class="btn btn-sm btn-primary mt-2 w-100" onclick="submitAdmin()"><i class="bi bi-send"></i> Submit</button>
+                        `;
+        ipcRenderer.send("load:edit", doc_id, editForm, 300, 300);
+      };
+
+      ipcRenderer.on("success:update-user", () => {
+        dialog.showMessageBoxSync({
+          type: "info",
+          title: "Update success",
+          message: "User data updated",
+        });
+        getData(idUser, userAccessLevel);
+      });
+    </script>
+  </body>
+</html>
