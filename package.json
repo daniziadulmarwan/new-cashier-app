@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@electron/remote": "^2.0.8",
+    "bcrypt": "^5.1.0",
     "bootstrap-icons": "^1.9.1",
     "chart.js": "^3.9.1",
     "electron": "^16.2.8",

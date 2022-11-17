@@ -106,7 +106,7 @@
                             <td>${rows[0].username}</td>
                             <td>
                               <button class="btn btn-sm btn-light btn-light-bordered float-end ms-1" title="edit username" onclick="editUsername('${rows[0].username}', ${rows[0].id})"><i class="bi bi-pen"></i></button>
-                              <button class="btn btn-sm btn-light btn-light-bordered float-end ms-1" title="edit profile"><i class="bi bi-person"></i></button>
+                              <button class="btn btn-sm btn-light btn-light-bordered float-end ms-1" title="edit profile" onclick="editProfile(${rows[0].id})"><i class="bi bi-person"></i></button>
                               <button class="btn btn-sm btn-light btn-light-bordered float-end ms-1" title="edit password" onclick="editPassword(${rows[0].id})"><i class="bi bi-lock"></i></button>
                             </td>
                           </tr>`;
@@ -129,7 +129,7 @@
                              <td>${row.username}</td>
                              <td>
                                <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit username" onclick="editUsername('${row.username}', ${row.id})"><i class="bi bi-pen"></i></button>
-                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit profile"><i class="bi bi-person"></i></button>
+                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit profile" onclick="editProfile(${row.id})"><i class="bi bi-person"></i></button>
                                <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit password" onclick="editPassword(${row.id})"><i class="bi bi-lock"></i></button>
                              </td>
                            </tr>`;
@@ -150,7 +150,7 @@
                             <td>${rows[0].username}</td>
                             <td>
                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit username" onclick="editUsername('${rows[0].username}', ${rows[0].id})"><i class="bi bi-pen"></i></button>
-                              <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit profile"><i class="bi bi-person"></i></button>
+                              <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit profile" onclick="editProfile(${rows[0].id})"><i class="bi bi-person"></i></button>
                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit password" onclick="editPassword(${rows[0].id})"><i class="bi bi-lock"></i></button>
                             </td>
                           </tr>`;
@@ -223,6 +223,80 @@
                         <button class="btn btn-sm btn-primary mt-2 w-100" onclick="submitEditPassword(${id})"><i class="bi bi-send"></i> Submit</button>
                         `;
         ipcRenderer.send("load:edit", doc_id, editForm, 300, 200);
+      };
+
+      const editProfile = (id) => {
+        db.all(`select * from user where id = ${id}`, (err, rows) => {
+          if (err) throw err;
+          let editForm = "";
+          if (rows.length < 1) {
+            dialog.showMessageBoxSync({
+              type: "info",
+              title: "Alert",
+              message: "User belum terdaftar",
+            });
+          } else {
+            let firstName;
+            let lastName;
+            let position;
+            let phoneNumber;
+            let employeeNumber;
+            let employementStatus;
+
+            if (rows[0].first_name != null) {
+              firstName = rows[0].first_name;
+            } else {
+              firstName = "";
+            }
+
+            if (rows[0].last_name != null) {
+              lastName = rows[0].last_name;
+            } else {
+              lastName = "";
+            }
+
+            if (rows[0].position != null) {
+              position = rows[0].position;
+            } else {
+              position = "";
+            }
+
+            if (rows[0].phone_number != null) {
+              phoneNumber = rows[0].phone_number;
+            } else {
+              phoneNumber = "";
+            }
+
+            if (rows[0].employee_number != null) {
+              employeeNumber = rows[0].employee_number;
+            } else {
+              employeeNumber = "";
+            }
+
+            if (rows[0].status != null) {
+              employementStatus = rows[0].status;
+            } else {
+              employementStatus = "";
+            }
+
+            editForm += `
+                        <input type="text" class="form-control      form-control-sm mb-2" id="first-name" placeholder="Nama Depan" value="${firstName}" />
+
+                        <input type="text" class="form-control      form-control-sm mb-2" id="last-name" placeholder="Nama Belakang" value="${lastName}" />
+
+                        <input type="text" class="form-control      form-control-sm mb-2" id="position" placeholder="Posisi" value="${position}" />
+
+                        <input type="text" class="form-control      form-control-sm mb-2" id="phone-number" placeholder="Nomor Telepon" value="${phoneNumber}" />
+
+                        <input type="text" class="form-control      form-control-sm mb-2" id="employee-number" placeholder="Nomor Pegawai" value="${employeeNumber}" />
+
+                        <input type="text" class="form-control      form-control-sm mb-2" id="status" placeholder="Status" value="${employementStatus}" />
+
+                        <button class="btn btn-sm btn-primary mt-2 w-100" onclick="submitEditProfile(${id})"><i class="bi bi-send"></i> Submit</button>
+            `;
+            ipcRenderer.send("load:edit", doc_id, editForm, 300, 470);
+          }
+        });
       };
     </script>
   </body>

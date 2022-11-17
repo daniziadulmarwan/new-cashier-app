@@ -24,6 +24,8 @@ const submitAdmin = () => {
         if (err) throw err;
 
         if (result.length < 1) {
+          // let salt = bcrypt.genSaltSync();
+          // let hashedPassword = bcrypt.hashSync(password, salt);
           db.run(
             `insert into user (first_name, last_name, position, username, password, access_level) values ('${firstName}', '${lastName}', '${position}', '${username}', '${password}', 'admin')`,
             (err) => {
@@ -100,6 +102,31 @@ const submitEditPassword = (id) => {
             }
           );
         }
+      }
+    );
+  }
+};
+
+const submitEditProfile = (id) => {
+  let firstName = $("#first-name").val();
+  let lastName = $("#last-name").val();
+  let position = $("#position").val();
+  let phoneNumber = $("#phone-number").val();
+  let employeeNumber = $("#employee-number").val();
+  let status = $("#status").val();
+
+  if (firstName == "" || lastName == "" || position == "") {
+    dialog.showMessageBoxSync({
+      type: "info",
+      title: "Alert",
+      message: "Semua field harus diisi",
+    });
+  } else {
+    db.run(
+      `update user set first_name = '${firstName}', last_name = '${lastName}', position = '${position}', phone_number = '${phoneNumber}', employee_number = '${employeeNumber}', status = '${status}' where id = ${id}`,
+      (err) => {
+        if (err) throw err;
+        ipcRenderer.send("success:update-user");
       }
     );
   }
