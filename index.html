@@ -241,6 +241,7 @@
 
       const unCurtain = (userFirstName, userPosition, userAccessLevel) => {
         $(".overlay").addClass("out");
+        $(".overlay").removeClass("in");
         $("#userFirstName").html(userFirstName);
         $("#userPosition").html(userPosition);
         $("#userAccessLevel").html(userAccessLevel);
@@ -266,6 +267,7 @@
 
       const logout = () => {
         $(".overlay").addClass("in");
+        $(".overlay").removeClass("out");
         ipcRenderer.send("submit:logout");
       };
     </script>

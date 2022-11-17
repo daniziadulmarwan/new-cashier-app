@@ -105,9 +105,9 @@
                             <td>${rows[0].id}</td>
                             <td>${rows[0].username}</td>
                             <td>
-                              <button class="btn btn-sm btn-light btn-light-bordered float-end" title="edit username"><i class="bi bi-pen"></i></button>
-                              <button class="btn btn-sm btn-light btn-light-bordered float-end" title="edit profile"><i class="bi bi-person"></i></button>
-                              <button class="btn btn-sm btn-light btn-light-bordered float-end" title="edit password"><i class="bi bi-lock"></i></button>
+                              <button class="btn btn-sm btn-light btn-light-bordered float-end ms-1" title="edit username" onclick="editUsername('${rows[0].username}', ${rows[0].id})"><i class="bi bi-pen"></i></button>
+                              <button class="btn btn-sm btn-light btn-light-bordered float-end ms-1" title="edit profile"><i class="bi bi-person"></i></button>
+                              <button class="btn btn-sm btn-light btn-light-bordered float-end ms-1" title="edit password" onclick="editPassword(${rows[0].id})"><i class="bi bi-lock"></i></button>
                             </td>
                           </tr>`;
                 $("#admin").html(tr);
@@ -128,9 +128,9 @@
                              <td>${row.id}</td>
                              <td>${row.username}</td>
                              <td>
-                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit username"><i class="bi bi-pen"></i></button>
+                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit username" onclick="editUsername('${row.username}', ${row.id})"><i class="bi bi-pen"></i></button>
                                <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit profile"><i class="bi bi-person"></i></button>
-                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit password"><i class="bi bi-lock"></i></button>
+                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit password" onclick="editPassword(${row.id})"><i class="bi bi-lock"></i></button>
                              </td>
                            </tr>`;
                   });
@@ -149,9 +149,9 @@
                             <td>${rows[0].id}</td>
                             <td>${rows[0].username}</td>
                             <td>
-                              <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit username"><i class="bi bi-pen"></i></button>
+                              <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit username" onclick="editUsername('${rows[0].username}', ${rows[0].id})"><i class="bi bi-pen"></i></button>
                               <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit profile"><i class="bi bi-person"></i></button>
-                              <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit password"><i class="bi bi-lock"></i></button>
+                              <button class="btn btn-sm btn-light btn-ligth-bordered float-end" title="edit password" onclick="editPassword(${rows[0].id})"><i class="bi bi-lock"></i></button>
                             </td>
                           </tr>`;
                 $("#main-user").html(tr);
@@ -175,10 +175,12 @@
                         </div>
                         <div class="form-group mb-2">
                           <input type="text" class="form-control form-control-sm" id="last-name" placeholder="Nama Belakang" />
+                        </div><div class="form-group mb-2">
+                          <input type="text" class="form-control form-control-sm" id="position" placeholder="Position" />
                         </div>
                         <div class="input-group input-group-sm mb-2">
                           <span class="input-group-text"><i class="bi bi-person"></i></span>
-                          <input type="text" class="form-control form-control-sm" id="usernme" placeholder="Usernme" />
+                          <input type="text" class="form-control form-control-sm" id="username" placeholder="Username" />
                         </div>
                         <div class="input-group input-group-sm mb-2">
                           <span class="input-group-text"><i class="bi bi-lock"></i></span>
@@ -197,6 +199,31 @@
         });
         getData(idUser, userAccessLevel);
       });
+
+      const editUsername = (username, id) => {
+        let editForm = `<div class="input-group input-group-sm mb-2">
+                          <span class="input-group-text"><i class="bi bi-person"></i></span>
+                          <input type="text" class="form-control form-control-sm" id="new-username" placeholder="Username baru" required autofocus />
+                          <input type="hidden" id="prev-username" value="${username}" />
+                        </div>
+                        <button class="btn btn-sm btn-primary mt-2 w-100" onclick="submitEditUsername('${username}', ${id})"><i class="bi bi-send"></i> Submit</button>
+                        `;
+        ipcRenderer.send("load:edit", doc_id, editForm, 300, 150);
+      };
+
+      const editPassword = (id) => {
+        let editForm = `<div class="input-group input-group-sm mb-2">
+                          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                          <input type="password" class="form-control form-control-sm" id="prev-password" placeholder="Password saat ini" required autofocus />
+                        </div>
+                        <div class="input-group input-group-sm mb-2">
+                          <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                          <input type="password" class="form-control form-control-sm" id="new-password" placeholder="Password baru" required />
+                        </div>
+                        <button class="btn btn-sm btn-primary mt-2 w-100" onclick="submitEditPassword(${id})"><i class="bi bi-send"></i> Submit</button>
+                        `;
+        ipcRenderer.send("load:edit", doc_id, editForm, 300, 200);
+      };
     </script>
   </body>
 </html>
