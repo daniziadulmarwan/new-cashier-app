@@ -233,6 +233,43 @@
     <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="../scripts/require.js"></script>
     <script>
+      const path = require("path");
+      const fs = require("fs");
+
+      const alertFade = () => {
+        $("#alert").html("");
+      };
+
+      const changeLogo = () => {
+        let pathImage = dialog.showOpenDialogSync({
+          properties: ["openFile"],
+          filters: [{ name: ["Images"], extensions: ["jpg", "png", "jpeg"] }],
+        });
+
+        let baseDir = path.dirname(__dirname);
+        let fileName = path.basename(pathImage[0]);
+
+        fs.readFile(pathImage[0], (err, data) => {
+          fs.writeFile(
+            path.join(baseDir, "/assets/images/logo", fileName),
+            data,
+            (err) => {
+              if (err) throw err;
+              db.run(`update profile set logo = '${fileName}'`, (err) => {
+                $("#alert").html(
+                  `<div class="alert alert-success">Logo berhasil diperbarui</div>`
+                );
+                setTimeout(alertFade, 5000);
+                $("#store-logo").attr(
+                  "src",
+                  `../assets/images/logo/${fileName}`
+                );
+              });
+            }
+          );
+        });
+      };
+
       const getData = () => {
         db.all(`select * from profile order by id asc limit 1`, (err, rows) => {
           if (err) throw err;
