@@ -29,6 +29,7 @@ let chartWindow;
 let buyerWindow;
 let generalSettingModal;
 let userSettingModal;
+let profileSettingModal;
 let loginModal;
 
 let login = false;
@@ -147,6 +148,27 @@ const modalUserSetting = () => {
   userSettingModal.webContents.on("dom-ready", () => {
     userSettingModal.webContents.send("load:data", idUser, accessLevel);
   });
+};
+
+const modalProfileSetting = () => {
+  profileSettingModal = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+
+    // autoHideMenuBar:true
+    parent: mainWindow,
+    modal: true,
+    title: "Profil Toko",
+    width: 500,
+    height: 555,
+    resizable: false,
+    minimizable: false,
+  });
+
+  remote.enable(profileSettingModal.webContents);
+  profileSettingModal.loadFile("modals/profile-setting.html");
 };
 
 ipcMain.on("sales-number", (e, msgSalesNumber) => {
@@ -1142,6 +1164,9 @@ ipcMain.on("load:setting", (e, msgParam) => {
       break;
     case "user":
       modalUserSetting();
+      break;
+    default:
+      modalProfileSetting();
       break;
   }
 });

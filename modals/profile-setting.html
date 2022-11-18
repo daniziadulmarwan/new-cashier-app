@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="../assets/styles/main.css" />
+    <style>
+      #input-tax-percentage {
+        border: 1px solid #b9b9b9;
+        padding: 5px 0px;
+        border-radius: 3px;
+        display: none;
+        padding-left: 5px;
+      }
+      #input-tax-percentage:focus {
+        border: 1px solid #b9b9b9;
+        outline: #d3f1ff;
+      }
+      .input-profile,
+      .btn-edit {
+        display: none;
+      }
+    </style>
+  </head>
+  <body
+    style="background: #f0f3f4; overflow-y: auto"
+    id="profile-setting"
+    onload="getData()"
+  >
+    <!-- START: Content -->
+    <div class="container mt-3">
+      <div class="row">
+        <div class="col-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h6>Informasi Umum</h6>
+            </div>
+            <div class="box-body">
+              <table class="table-borderless">
+                <tr>
+                  <td style="width: 120px">Nama Toko</td>
+                  <td>
+                    <span class="span-profil" id="store-name"></span>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm input-profile"
+                      id="input-store-name"
+                      autofocus
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 120px">Alamat</td>
+                  <td>
+                    <span class="span-profil" id="store-address"></span>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm input-profile"
+                      id="input-store-address"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 120px">NPWP</td>
+                  <td>
+                    <span class="span-profil" id="store-tax-id"></span>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm input-profile"
+                      id="input-store-tax-id"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 120px">Email</td>
+                  <td>
+                    <span class="span-profil" id="store-email"></span>
+                    <input
+                      type="email"
+                      class="form-control form-control-sm input-profile"
+                      id="input-store-email"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 120px">Website</td>
+                  <td>
+                    <span class="span-profil" id="store-website"></span>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm input-profile"
+                      id="input-store-website"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 120px">No. Telp</td>
+                  <td>
+                    <span class="span-profil" id="store-telp"></span>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm input-profile"
+                      id="input-store-telp"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 120px">No. Fax</td>
+                  <td>
+                    <span class="span-profil" id="store-fax"></span>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm input-profile"
+                      id="input-store-fax"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 120px">Rekening Bank 1</td>
+                  <td>
+                    <span
+                      class="span-profil"
+                      id="store-bank-account-one"
+                    ></span>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm input-profile"
+                      id="input-store-bank-account-one"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 120px">Nama Bank 1</td>
+                  <td>
+                    <span class="span-profil" id="store-bank-name-one"></span>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm input-profile"
+                      id="input-store-bank-name-one"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 120px">Rekening Bank 2</td>
+                  <td>
+                    <span
+                      class="span-profil"
+                      id="store-bank-account-two"
+                    ></span>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm input-profile"
+                      id="input-store-bank-account-two"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="width: 120px">Nama Bank 2</td>
+                  <td>
+                    <span class="span-profil" id="store-bank-name-two"></span>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm input-profile"
+                      id="input-store-bank-name-two"
+                    />
+                  </td>
+                </tr>
+              </table>
+              <button
+                class="btn btn-sm btn-light btn-light-bordered mt-2 btn-edit me-1"
+                id="btn-cancel-edit"
+                onclick="cancelEdit()"
+              >
+                <i class="bi bi-x-circle"></i> Cancel
+              </button>
+              <button
+                class="btn btn-sm btn-primary mt-2 me-1 btn-edit"
+                id="btn-submit-profile"
+                onclick="submitProfile()"
+              >
+                <i class="bi bi-send"></i> Submit
+              </button>
+              <button
+                class="btn btn-sm btn-light btn-light-bordered mt-2"
+                id="btn-change"
+                onclick="showInputProfile()"
+              >
+                <i class="bi bi-pencil"></i>
+                Change
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- START: Part 2 -->
+      <div class="row">
+        <div class="col-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h6>Logo</h6>
+            </div>
+            <div class="box-body">
+              <div class="form-group">
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-light btn-light-bordered"
+                  onclick="changeLogo()"
+                >
+                  Change Logo
+                </button>
+                <br />
+                <small>Format: JPG/PNG/JPEG, Ukuran maxs: 500 KB</small>
+              </div>
+              <div id="alert"></div>
+              <img src="" id="store-logo" style="height: auto; width: 100px" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- END: Part 2 -->
+    </div>
+    <!-- END: Content -->
+
+    <!-- Javascripts -->
+    <script src="../assets/jquery/jquery-1.9.0.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/require.js"></script>
+    <script>
+      const getData = () => {
+        db.all(`select * from profile order by id asc limit 1`, (err, rows) => {
+          if (err) throw err;
+          if (rows.length < 1) {
+            $(".span-profil").html("");
+          } else {
+            $("#store-name").html(rows[0].store_name);
+            $("#store-address").html(rows[0].store_address);
+            $("#store-tax-id").html(rows[0].store_tax_id);
+            $("#store-email").html(rows[0].email);
+            $("#store-website").html(rows[0].store_website);
+            $("#store-telp").html(rows[0].phone_number);
+            $("#store-fax").html(rows[0].fax);
+            $("#store-bank-account-one").html(rows[0].bank_account_one);
+            $("#store-bank-name-one").html(rows[0].bank_name_one);
+            $("#store-bank-account-two").html(rows[0].bank_account_two);
+            $("#store-bank-name-two").html(rows[0].bank_name_two);
+
+            if (rows[0].logo == null || rows[0].logo == "") {
+              $("#store-logo").attr("src", "../assets/images/logo/shop.png");
+            } else {
+              $("#store-logo").attr(
+                "src",
+                `../assets/images/logo/${rows[0].logo}`
+              );
+            }
+          }
+        });
+      };
+
+      const showInputProfile = () => {
+        $(".input-profile, .btn-edit").css("display", "initial");
+        $(".span-profil, #btn-change").css("display", "none");
+        $("#input-store-name").focus();
+
+        db.all(`select * from profile order by id asc limit 1`, (err, rows) => {
+          if (err) throw err;
+          if (rows.length < 1) {
+            $(".input-profile").val("");
+          } else {
+            $("#input-store-name").val(rows[0].store_name);
+            $("#input-store-address").val(rows[0].store_address);
+            $("#input-store-tax-id").val(rows[0].store_tax_id);
+            $("#input-store-email").val(rows[0].email);
+            $("#input-store-website").val(rows[0].store_website);
+            $("#input-store-telp").val(rows[0].phone_number);
+            $("#input-store-fax").val(rows[0].fax);
+            $("#input-store-bank-account-one").val(rows[0].bank_account_one);
+            $("#input-store-bank-name-one").val(rows[0].bank_name_one);
+            $("#input-store-bank-account-two").val(rows[0].bank_account_two);
+            $("#input-store-bank-name-two").val(rows[0].bank_name_two);
+          }
+        });
+      };
+
+      const cancelEdit = () => {
+        $(".input-profile, .btn-edit").css("display", "none");
+        $(".span-profil, #btn-change").css("display", "initial");
+      };
+
+      const submitProfile = () => {
+        let name = $("#input-store-name").val();
+        let address = $("#input-store-address").val();
+        let tax_id = $("#input-store-tax-id").val();
+        let email = $("#input-store-email").val();
+        let website = $("#input-store-website").val();
+        let telp = $("#input-store-telp").val();
+        let fax = $("#input-store-fax").val();
+        let bank_account_one = $("#input-store-bank-account-one").val();
+        let bank_name_one = $("#input-store-bank-name-one").val();
+        let bank_account_two = $("#input-store-bank-account-two").val();
+        let bank_name_two = $("#input-store-bank-name-two").val();
+
+        console.log(name);
+        console.log(address);
+        console.log(tax_id);
+        console.log(email);
+        console.log(website);
+        console.log(telp);
+
+        let Query = `update profile set store_name = '${name}', store_address = '${address}', store_tax_id = '${tax_id}', email = '${email}', store_website = '${website}', phone_number = '${telp}', fax = '${fax}', bank_account_one = '${bank_account_one}', bank_name_one = '${bank_name_one}', bank_account_two = '${bank_account_two}', bank_name_two = '${bank_name_two}' where id = 1`;
+
+        db.run(Query, (err) => {
+          if (err) throw err;
+          $(".input-profile, .btn-edit").css("display", "none");
+          $(".span-profil, #btn-change").css("display", "initial");
+          getData();
+        });
+      };
+    </script>
+  </body>
+</html>
