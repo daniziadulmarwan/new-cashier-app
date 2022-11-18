@@ -16,6 +16,7 @@
     <nav class="navbar navbar-dark bg-dark fixed-top">
       <div class="container-fluid">
         <div style="display: inline-block; color: aliceblue">
+          <img src="" id="store-logo" width="30" height="30" />
           <span id="store-name" class="ms-2" style="font-size: 14.5px"
             >My Store</span
           >
@@ -119,10 +120,10 @@
           <button class="btn btn-sm btn-secondary" onclick="logout()">
             <i class="bi bi-box-arrow-in-right"></i>
           </button>
-          <button class="btn btn-sm btn-secondary">
+          <button class="btn btn-sm btn-secondary" onclick="winMinimize()">
             <i class="bi bi-dash-lg"></i>
           </button>
-          <button class="btn btn-sm btn-danger">
+          <button class="btn btn-sm btn-danger" onclick="winClose()">
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
@@ -238,14 +239,36 @@
         ipcRenderer.send("load:setting", param);
       };
 
-      ipcRenderer.on("load:overlay", () => {
+      const winMinimize = () => {
+        ipcRenderer.send("window:minimize");
+      };
+
+      const winClose = () => {
+        ipcRenderer.send("window:close");
+      };
+
+      ipcRenderer.on("load:overlay", (e, storeObject) => {
         let overlay = `<div class="overlay"></div>`;
         $("body").prepend(overlay);
+        if (storeObject.logo == null || storeObject.logo == "") {
+          $("#store-logo").attr("src", "./assets/images/logo/shop.png");
+        } else {
+          $("#store-logo").attr(
+            "src",
+            `./assets/images/logo/${storeObject.logo}`
+          );
+        }
       });
 
-      const unCurtain = (userFirstName, userPosition, userAccessLevel) => {
+      const unCurtain = (
+        storeObject,
+        userFirstName,
+        userPosition,
+        userAccessLevel
+      ) => {
         $(".overlay").addClass("out");
         $(".overlay").removeClass("in");
+        $("#store-name").html(storeObject.name);
         $("#userFirstName").html(userFirstName);
         $("#userPosition").html(userPosition);
         $("#userAccessLevel").html(userAccessLevel);
@@ -260,12 +283,21 @@
             $("#general-setting, #store-profile-setting").addClass("disabled");
             break;
         }
+
+        if (storeObject.logo == null || storeObject.logo == "") {
+          $("#store-logo").attr("src", "./assets/images/logo/shop.png");
+        } else {
+          $("#store-logo").attr(
+            "src",
+            `./assets/images/logo/${storeObject.logo}`
+          );
+        }
       };
 
       ipcRenderer.on(
         "unlock:app",
-        (e, idUser, firstName, position, accessLevel) => {
-          unCurtain(firstName, position, accessLevel);
+        (e, storeObject, idUser, firstName, position, accessLevel) => {
+          unCurtain(storeObject, firstName, position, accessLevel);
         }
       );
 

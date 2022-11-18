@@ -37,6 +37,7 @@ let idUser;
 let firstName;
 let position;
 let accessLevel;
+let storeObject = {};
 
 ipcMain.on(
   "success:login",
@@ -49,6 +50,7 @@ ipcMain.on(
 
     mainWindow.webContents.send(
       "unlock:app",
+      storeObject,
       msgIdUser,
       firstName,
       position,
@@ -78,6 +80,12 @@ const modalLogin = () => {
     minimizable: false,
     maximizable: false,
     resizable: false,
+  });
+
+  db.all("select * from profile where id = 1 order by id asc", (err, rows) => {
+    if (err) throw err;
+    storeObject.name = rows[0].store_name;
+    storeObject.logo = rows[0].logo;
   });
 
   remote.enable(loginModal.webContents);
@@ -184,18 +192,32 @@ const mainWin = () => {
     title: "My Cashier 1.0",
     height: 560,
     resizable: false,
-    // autoHideMenuBar: true,
+    autoHideMenuBar: true,
+    frame: false,
   });
 
   mainWindow.loadFile("index.html");
   // db.serialize(() => console.log("Connected database"));
+  db.all("select * from profile where id = 1 order by id asc", (err, rows) => {
+    if (err) throw err;
+    storeObject.name = rows[0].store_name;
+    storeObject.logo = rows[0].logo;
+  });
   if (!login) {
     mainWindow.webContents.on("did-finish-load", () => {
-      mainWindow.webContents.send("load:overlay");
+      mainWindow.webContents.send("load:overlay", storeObject);
     });
     modalLogin();
   }
 };
+
+ipcMain.on("window:minimize", () => {
+  mainWindow.minimize();
+});
+
+ipcMain.on("window:close", () => {
+  app.quit();
+});
 
 app.on("ready", () => {
   mainWin();
