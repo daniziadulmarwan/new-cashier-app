@@ -36,8 +36,10 @@ let login = false;
 let idUser;
 let firstName;
 let position;
+
 let accessLevel;
 let storeObject = {};
+let configTableModal;
 
 ipcMain.on(
   "success:login",
@@ -63,6 +65,36 @@ ipcMain.on(
 ipcMain.on("submit:logout", () => {
   loginModal.show();
 });
+
+const modalTableConfig = () => {
+  configTableModal = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
+
+    // autoHideMenuBar:true,
+    width: 300,
+    height: 150,
+    parent: mainWindow,
+    modal: true,
+    frame: false,
+    minimizable: false,
+    maximizable: false,
+    resizable: false,
+  });
+
+  configTableModal.loadFile("modals/config-table.html");
+  configTableModal.on("close", (e) => {
+    e.preventDefault();
+  });
+  configTableModal.on("minimize", (e) => {
+    e.preventDefault();
+  });
+  configTableModal.on("maximize", (e) => {
+    e.preventDefault();
+  });
+};
 
 const modalLogin = () => {
   loginModal = new BrowserWindow({
@@ -198,17 +230,144 @@ const mainWin = () => {
 
   mainWindow.loadFile("index.html");
   // db.serialize(() => console.log("Connected database"));
-  db.all("select * from profile where id = 1 order by id asc", (err, rows) => {
-    if (err) throw err;
-    storeObject.name = rows[0].store_name;
-    storeObject.logo = rows[0].logo;
-  });
-  if (!login) {
-    mainWindow.webContents.on("did-finish-load", () => {
-      mainWindow.webContents.send("load:overlay", storeObject);
-    });
-    modalLogin();
-  }
+  db.all(
+    `select name from sqlite_master where type = 'table' and name not like 'sqlite_%'`,
+    (err, rows) => {
+      if (err) throw err;
+      if (rows.length < 1) {
+        mainWindow.webContents.on("did-finish-load", () => {
+          mainWindow.webContents.send("load:overlay", storeObject);
+        });
+        modalTableConfig();
+        db.run(
+          `CREATE TABLE profile(id integer primary key, store_name varchar(150), store_tax_id varchar(150), store_address varchar(150), store_moto varchar(150), store_website varchar(150), phone_number varchar(150), email varchar(100), fax  varchar(50), bank_account_one varchar(100), bank_name_one varchar(100), bank_account_two varchar(100), bank_name_two varchar(100), logo varchar(150))`,
+          (err) => {
+            if (err) throw err;
+            db.run(
+              `CREATE TABLE user (id integer primary key autoincrement, username varchar(100) not null, password varchar(100) not null, access_level varchar(100) not null, first_name varchar(100) not null, last_name varchar(100) not null, position varchar(100), phone_number varchar(12), employee_number varchar(50), status varchar(20))`,
+              (err) => {
+                if (err) throw err;
+                db.run(
+                  `CREATE TABLE buyers (id integer primary key autoincrement, name varchar(150), address text, website varchar(100), telp_one varchar(20), telp_two varchar(20), email varchar(150))`,
+                  (err) => {
+                    if (err) throw err;
+                    db.run(
+                      `CREATE TABLE products(id integer primary key autoincrement, product_name varchar(200) not null unique, product_code varchar(200), barcode varchar(200), category varchar(200), selling_price real, cost_of_product real, product_initial_qty integer, unit varchar(20), check(cost_of_product <= selling_price))`,
+                      (err) => {
+                        if (err) throw err;
+                        db.run(
+                          `CREATE TABLE discount_final (id integer primary key autoincrement, input_date text, invoice_number varchar(100) not null, discount_percent real, discount_money real, total_discount_final real)`,
+                          (err) => {
+                            if (err) throw err;
+                            db.run(
+                              `CREATE TABLE sales(id integer primary key autoincrement, input_date text, invoice_number varchar(100), buyer varchar(100), buyer_id integer, payment varchar(6), description text, po_number varchar(100), due_date text,
+                            term varchar(100), sales_admin varchar(100), product_name varchar(200) not null, product_code varchar(200) not null, cost_of_product real, price real, qty integer, unit varchar(20), discount_percent real, discount_money real, total real)`,
+                              (err) => {
+                                if (err) throw err;
+                                db.run(
+                                  `CREATE TABLE sales_evidence_info (id integer primary key autoincrement, invoice_number varchar(100), print_status varchar(50))`,
+                                  (err) => {
+                                    if (err) throw err;
+                                    db.run(
+                                      `CREATE TABLE sales_tax (id integer primary key autoincrement, input_date text, invoice_number varchar(100), total_tax real)`,
+                                      (err) => {
+                                        if (err) throw err;
+                                        db.run(
+                                          `CREATE TABLE tax(id integer primary key autoincrement, tax_name varchar(100), percentage real)`,
+                                          (err) => {
+                                            if (err) throw err;
+                                            db.run(
+                                              `CREATE TABLE categories(id integer primary key autoincrement, category varchar(100))`,
+                                              (err) => {
+                                                if (err) throw err;
+                                                db.run(
+                                                  `CREATE TABLE units(id integer primary key autoincrement, unit  varchar(20))`,
+                                                  (err) => {
+                                                    if (err) throw err;
+                                                    db.run(
+                                                      `insert into profile(store_name, logo) values('My Store', 'shop.png')`,
+                                                      (err) => {
+                                                        if (err) throw err;
+                                                        db.run(
+                                                          `insert into user(username, password, access_level, first_name, last_name) values('admin', 'admin', 'main_user', 'admin', 'satu')`,
+                                                          (err) => {
+                                                            if (err) throw err;
+                                                            db.run(
+                                                              `insert into tax(tax_name, percentage) values('pajak',10)`,
+                                                              (err) => {
+                                                                if (err)
+                                                                  throw err;
+                                                                db.run(
+                                                                  `insert into units(unit) values('Pack'),('Pcs'),('Kg'),('Lusin')`,
+                                                                  (err) => {
+                                                                    if (err)
+                                                                      throw err;
+
+                                                                    db.run(
+                                                                      `insert into categories(category) values('Electronic'),('Gadget'),('Peralatan'),('Lainnya')`,
+                                                                      (err) => {
+                                                                        if (err)
+                                                                          throw err;
+                                                                        const finilizeTableConfig =
+                                                                          () => {
+                                                                            configTableModal.hide();
+                                                                            modalLogin();
+                                                                          };
+
+                                                                        setTimeout(
+                                                                          finilizeTableConfig,
+                                                                          2000
+                                                                        );
+                                                                      }
+                                                                    );
+                                                                  }
+                                                                );
+                                                              }
+                                                            );
+                                                          }
+                                                        );
+                                                      }
+                                                    );
+                                                  }
+                                                );
+                                              }
+                                            );
+                                          }
+                                        );
+                                      }
+                                    );
+                                  }
+                                );
+                              }
+                            );
+                          }
+                        );
+                      }
+                    );
+                  }
+                );
+              }
+            );
+          }
+        );
+      } else {
+        db.all(
+          "select * from profile where id = 1 order by id asc",
+          (err, rows) => {
+            if (err) throw err;
+            storeObject.name = rows[0].store_name;
+            storeObject.logo = rows[0].logo;
+          }
+        );
+        if (!login) {
+          mainWindow.webContents.on("did-finish-load", () => {
+            mainWindow.webContents.send("load:overlay", storeObject);
+          });
+          modalLogin();
+        }
+      }
+    }
+  );
 };
 
 ipcMain.on("window:minimize", () => {

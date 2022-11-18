@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../assets/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/bootstrap-icons/font/bootstrap-icons.css"
+    />
+    <link rel="stylesheet" href="../assets/styles/main.css" />
+    <style>
+      #input-tax-percentage {
+        border: 1px solid #b9b9b9;
+        padding: 5px 0px;
+        border-radius: 3px;
+        display: none;
+        padding-left: 5px;
+      }
+      #input-tax-percentage:focus {
+        border: 1px solid #b9b9b9;
+        outline: #d3f1ff;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- START: Main -->
+    <div style="padding: 0px 30px 20px 30px">
+      <div class="row mt-5">
+        <div class="col-12 d-flex justify-content-center mb-2">
+          <h6>Configuring tables, please wait</h6>
+        </div>
+        <div class="col-12">
+          <div class="progress">
+            <div
+              class="progress-bar progress-bar-striped progress-bar-animated"
+              id="table-progress"
+              role="progress"
+              aria-valuenow="100"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              style="width: 100%"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- END: Main -->
+
+    <script src="../assets/jquery/jquery-1.9.0.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../scripts/require.js"></script>
+  </body>
+</html>
